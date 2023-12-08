@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+  ############################################################
+  default:
+    desc: Run security scanner
+    cmds:
+      - gosec -conf .gosec.config.json "./..."
+

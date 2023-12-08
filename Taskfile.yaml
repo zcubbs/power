@@ -1,0 +1,26 @@
+version: '3'
+
+env:
+  GOOS: "{{OS}}"
+
+vars:
+  GO_PACKAGE: github.com/zcubbs/power
+  GO_PACKAGE_SHORT: power
+  CERTIFICATE_DIR: scripts/tls
+  TARGET_DIRS: "server/tls components/go/tls"
+  PROTO_DIRS: "server components/go components/java components/react"
+
+includes:
+  scan: .taskfiles/scan.yaml
+  test: .taskfiles/test.yaml
+  tls: .taskfiles/tls.yaml
+  pb: .taskfiles/pb.yaml
+  build: .taskfiles/build.yaml
+  docker: .taskfiles/docker.yaml
+  run: .taskfiles/run.yaml
+  lint: .taskfiles/lint.yaml
+  tools: .taskfiles/tools.yaml
+
+tasks:
+  default:
+    cmd: task -l
