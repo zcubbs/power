@@ -1,21 +1,30 @@
 package designer
 
-import "flag"
+import (
+	"encoding/json"
+	"github.com/zcubbs/power/blueprint"
+)
 
-type Designer struct {
-	ProjectName string
-
-	Layers []Layer
+// ProjectSpec represents the overall project specification.
+type ProjectSpec struct {
+	Components []blueprint.ComponentSpec `json:"components"`
 }
 
-type Layer struct {
-	Name      string
-	Path      string
-	Blueprint Blueprint
+// ParseSpec parses the JSON input into ProjectSpec struct.
+func ParseSpec(jsonInput string) (*ProjectSpec, error) {
+	var spec ProjectSpec
+	err := json.Unmarshal([]byte(jsonInput), &spec)
+	return &spec, err
 }
 
-type Blueprint interface {
-	Generate() error
-	SetFlags(...flag.Flag) error
-	SetFlagsFromMap(map[string]string) error
+// GenerateProject iterates over components and generates each part.
+func GenerateProject(spec *ProjectSpec, outputPath string) error {
+	for _, component := range spec.Components {
+		if err := blueprint.GenerateComponent(component, outputPath); err != nil {
+			return err
+		}
+	}
+	// Zip the project directory
+	// ...
+	return nil
 }

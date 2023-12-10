@@ -8,7 +8,7 @@ vars:
   GO_PACKAGE_SHORT: power
   SCRIPTS_DIR: scripts
   PROTO_DIR: "proto"
-  PROTO_GEN_DIR: "server/gen"
+  PROTO_GEN_DIR: "proto/gen"
 
 includes:
   scan: .taskfiles/scan.yaml
