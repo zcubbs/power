@@ -6,9 +6,9 @@ env:
 vars:
   GO_PACKAGE: github.com/zcubbs/power
   GO_PACKAGE_SHORT: power
-  CERTIFICATE_DIR: scripts/tls
-  TARGET_DIRS: "server/tls components/go/tls"
-  PROTO_DIRS: "server components/go components/java components/react"
+  SCRIPTS_DIR: scripts
+  PROTO_DIR: "proto"
+  PROTO_GEN_DIR: "server/gen"
 
 includes:
   scan: .taskfiles/scan.yaml

@@ -4,34 +4,7 @@ tasks:
   default:
     desc: Generate/Update TLS certificates
     cmds:
-      - cmd: echo "Certificate directory={{.CERTIFICATE_DIR}}"
       - task: gen:{{OS}}
-      - task: copy:{{OS}}
-
-  ############################################################
-  # Copy TLS certificates
-  copy:
-    desc: Copy TLS certificates
-    cmds:
-      - task: tls:{{OS}}
-
-  copy:windows:
-    desc: Copy TLS certificates for Windows
-    cmds:
-      - cmd: powershell -ExecutionPolicy Bypass -File {{.CERTIFICATE_DIR}}/copy.ps1 -sourceDir {{.CERTIFICATE_DIR}}/generated -targetDirs {{.TARGET_DIRS}}
-
-  copy:linux:
-    desc: Copy TLS certificates for Linux
-    cmds:
-      - cmd: >-
-          for dir in $(echo $TARGET_DIRS | tr " " "\n"); do
-          cp -r {{.CERTIFICATE_DIR}}/generated/* $dir;
-          done
-
-  copy:darwin:
-    desc: Copy TLS certificates for MacOS
-    cmds:
-      - task: copy:linux
 
   ############################################################
   # Generate TLS certificates
@@ -39,16 +12,15 @@ tasks:
     desc: Generate TLS certificates
     cmds:
       - task: tls:gen:{{OS}}
-
   gen:windows:
     desc: Generate TLS certificates for Windows
     cmds:
-      - cmd: powershell -ExecutionPolicy Bypass -Command {{.CERTIFICATE_DIR}}/gen.ps1 -outputDir {{.CERTIFICATE_DIR}}/generated -certificateConfig {{.CERTIFICATE_DIR}}/certificate.conf
+      - cmd: powershell -ExecutionPolicy Bypass -Command {{.SCRIPTS_DIR}}/gen.ps1 -outputDir {{.SCRIPTS_DIR}}/generated -certificateConfig {{.SCRIPTS_DIR}}/certificate.conf
 
   gen:linux:
     desc: Generate TLS certificates for Linux
     cmds:
-      - cmd: "{{.CERTIFICATE_DIR}}/gen.sh -outputDir {{.CERTIFICATE_DIR}}/generated"
+      - cmd: "{{.SCRIPTS_DIR}}/gen.sh -outputDir {{.SCRIPTS_DIR}}/generated"
 
   gen:darwin:
     desc: Generate TLS certificates for MacOS

@@ -4,12 +4,10 @@ tasks:
 
   ############################################################
   default:
-    aliases: [ proto ]
-    desc: Generate proto code
+    desc: Generate protobuf code and manage .proto files
     cmds:
-      - task: delete:proto:{{OS}}
-      - task: gen:{{OS}}
-      - task: copy:proto:{{OS}}
+      - task: "gen:{{OS}}"
+      - task: "copy:proto:{{OS}}"
 
   ############################################################
   # Iterate over PROTO_DIRS and delete *.pb.go files
@@ -43,16 +41,16 @@ tasks:
   gen:windows:
     desc: Generate proto code for Windows
     cmds:
-      - >- 
-        powershell -Command foreach ($dir in $env:PROTO_DIRS) { 
-        protoc --proto_path=$dir 
-          --go_out=$dir 
-          --go_opt=paths=source_relative 
-          --go-grpc_out=$dir 
-          --go-grpc_opt=paths=source_relative 
-          --grpc-gateway_out=$dir 
-          --grpc-gateway_opt=paths=source_relative 
-          --openapiv2_out=$dir 
+      - >-
+        powershell -Command foreach ($dir in $env:PROTO_DIRS) {
+        protoc --proto_path=$dir
+          --go_out=$dir
+          --go_opt=paths=source_relative
+          --go-grpc_out=$dir
+          --go-grpc_opt=paths=source_relative
+          --grpc-gateway_out=$dir
+          --grpc-gateway_opt=paths=source_relative
+          --openapiv2_out=$dir
           --openapiv2_opt=allow_merge=true,merge_file_name=api $dir/*.proto }
 
   gen:darwin:
@@ -63,30 +61,21 @@ tasks:
   gen:linux:
     desc: Generate proto code for Linux
     cmds:
-      - cmd: >-
-          for dir in $(echo $PROTO_DIRS); do protoc 
-            --proto_path=$dir 
-            --go_out=$dir 
-            --go_opt=paths=source_relative 
-            --go-grpc_out=$dir 
-            --go-grpc_opt=paths=source_relative 
-            --grpc-gateway_out=$dir 
-            --grpc-gateway_opt=paths=source_relative 
-            --openapiv2_out=$dir 
-            --openapiv2_opt=allow_merge=true,merge_file_name=api $dir/*.proto; 
-          done
+      - cmd: chmod +x {{.SCRIPTS_DIR}}/protoc/gen_proto.sh
+      - cmd: echo "PROTO_DIR={{.PROTO_DIR}} PROTO_GEN_DIR={{.PROTO_GEN_DIR}}"
+      - cmd: "{{.SCRIPTS_DIR}}/protoc/gen_proto.sh {{.PROTO_DIR}} {{.PROTO_GEN_DIR}}"
 
   ############################################################
   # Iterate over PROTO_DIRS and copy *.proto files to pb/
   copy:proto:
     desc: Copy proto files
     cmds:
-      - task: copy:proto:{{OS}}
+      - task: "copy:proto:{{OS}}"
 
   copy:proto:windows:
-    desc: Copy proto files
+    desc: Copy proto files for Windows
     cmds:
-      - powershell -Command foreach ($dir in $env:PROTO_DIRS) { Copy-Item -Path $dir\*.proto -Destination $dir\pb\ -Recurse }
+      - cmd: powershell -Command foreach ($dir in $env:PROTO_DIRS) { Copy-Item -Path $dir\\*.proto -Destination $dir\\pb\\ -Recurse }
 
   copy:proto:darwin:
     desc: Copy proto files
