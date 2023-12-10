@@ -1,0 +1,22 @@
+name: "Go API Server"
+description: "A Go API Server"
+options:
+  - name: "httpRouter"
+    description: "Choose your HTTP router"
+    type: "select"
+    choices:
+      - "go-chi"
+      - "go-fiber"
+      - "gorilla-mux"
+      - "standard-library"
+      - "none"
+  - name: "database"
+    description: "Choose your database"
+    type: "select"
+    choices:
+      - "postgres"
+      - "sqlite"
+      - "none"
+  - name: "enableLogging"
+    description: "Enable request logging"
+    type: "boolean"

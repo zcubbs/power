@@ -1,4 +1,4 @@
-package goblueprint
+package apiserver
 
 import _ "embed"
 

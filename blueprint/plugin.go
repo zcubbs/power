@@ -6,10 +6,6 @@ import (
 	"plugin"
 )
 
-type Plugin interface {
-	Generate(spec ComponentSpec, outputPath string) error
-}
-
 func LoadPlugins(pluginDir string) {
 	files, err := filepath.Glob(filepath.Join(pluginDir, "*.so"))
 	if err != nil {
@@ -29,16 +25,30 @@ func LoadPlugins(pluginDir string) {
 			continue
 		}
 
-		bp, ok := symbol.(Plugin)
+		bp, ok := symbol.(ComponentGenerator)
 		if !ok {
 			log.Println("Invalid plugin type:", file)
 			continue
 		}
 
-		err = RegisterGenerator(file, bp)
+		blueprintName := extractBlueprintName(file)
+		err = RegisterGenerator(blueprintName, bp)
 		if err != nil {
 			log.Println("Failed to register plugin:", err)
 			continue
 		}
+
+		specFilePath := filepath.Join(pluginDir, blueprintName+"-spec.yaml")
+		spec, err := LoadBlueprintSpec(specFilePath)
+		if err != nil {
+			log.Println("Failed to load spec for plugin:", err)
+			continue
+		}
+		RegisterBlueprintSpec(blueprintName, spec)
 	}
+}
+
+func extractBlueprintName(pluginFilePath string) string {
+	// Implement logic to extract the blueprint name
+	return filepath.Base(pluginFilePath)
 }

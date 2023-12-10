@@ -2,6 +2,8 @@ package blueprint
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 	"sync"
 )
 
@@ -16,9 +18,25 @@ type ComponentGenerator interface {
 	Generate(spec ComponentSpec, outputPath string) error
 }
 
+// BlueprintSpec represents the structure of a YAML blueprint spec.
+type BlueprintSpec struct {
+	Name        string            `yaml:"name"`
+	Description string            `yaml:"description"`
+	Options     []BlueprintOption `yaml:"options"`
+}
+
+type BlueprintOption struct {
+	Name        string   `yaml:"name"`
+	Description string   `yaml:"description"`
+	Type        string   `yaml:"type"`
+	Choices     []string `yaml:"choices,omitempty"`
+}
+
 // Generators is a map that holds all registered blueprint generators.
-// Using a sync.Map for safe concurrent access.
 var Generators sync.Map
+
+// blueprintSpecs holds the specs for each registered blueprint.
+var blueprintSpecs sync.Map
 
 // RegisterGenerator adds a new generator to the system.
 func RegisterGenerator(name string, generator ComponentGenerator) error {
@@ -28,6 +46,11 @@ func RegisterGenerator(name string, generator ComponentGenerator) error {
 	return nil
 }
 
+// RegisterBlueprintSpec registers the spec for a given blueprint type.
+func RegisterBlueprintSpec(blueprintType string, spec *BlueprintSpec) {
+	blueprintSpecs.Store(blueprintType, spec)
+}
+
 // GetGenerator retrieves a generator from the registry.
 func GetGenerator(name string) (ComponentGenerator, bool) {
 	generator, ok := Generators.Load(name)
@@ -35,6 +58,21 @@ func GetGenerator(name string) (ComponentGenerator, bool) {
 		return nil, false
 	}
 	return generator.(ComponentGenerator), true
+}
+
+// GetBlueprintSpec retrieves the spec for a given blueprint type.
+func GetBlueprintSpec(blueprintType string) (*BlueprintSpec, error) {
+	spec, ok := blueprintSpecs.Load(blueprintType)
+	if !ok {
+		return nil, fmt.Errorf("no spec found for blueprint type: %s", blueprintType)
+	}
+
+	blueprintSpec, ok := spec.(*BlueprintSpec)
+	if !ok {
+		return nil, fmt.Errorf("invalid spec type for blueprint type: %s", blueprintType)
+	}
+
+	return blueprintSpec, nil
 }
 
 // GenerateComponent calls the appropriate generator based on the component type.
@@ -50,4 +88,16 @@ func GenerateComponent(spec ComponentSpec, outputPath string) error {
 	}
 
 	return generator.Generate(spec, outputPath)
+}
+
+// LoadBlueprintSpec reads and parses the YAML spec file for a blueprint.
+func LoadBlueprintSpec(filePath string) (*BlueprintSpec, error) {
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	var spec BlueprintSpec
+	err = yaml.Unmarshal(data, &spec)
+	return &spec, err
 }
