@@ -1,0 +1,34 @@
+// source: blueprint_service.proto
+
+syntax = "proto3";
+
+package pb.v1;
+
+option go_package = "github.com/zcubbs/power";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/rpc_generate_project.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Power API";
+    version: "0.1.0";
+    contact: {
+      name: "Power API";
+      url: "https://github.com/zcubbs/power";
+      email: "zcubbs@pm.me";
+    };
+  };
+};
+
+service BlueprintService {
+  rpc GenerateProject (GenerateProjectRequest) returns (GenerateProjectResponse) {
+    option (google.api.http) = {
+      post: "/v1/generate"
+      body: "*"
+    };
+  }
+}
+
+

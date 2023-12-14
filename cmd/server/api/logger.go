@@ -35,7 +35,7 @@ func GrpcLogger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo
 		attributes = append(attributes, "error", err)
 	}
 
-	log.Info(receivedRequestMsg,
+	log.Debug(receivedRequestMsg,
 		attributes...,
 	)
 
@@ -83,7 +83,7 @@ func HttpLogger(handler http.Handler) http.Handler {
 				attributes...,
 			)
 		} else {
-			log.Info(receivedRequestMsg,
+			log.Debug(receivedRequestMsg,
 				attributes...,
 			)
 		}

@@ -3,16 +3,18 @@ package api
 import (
 	"context"
 	"crypto/tls"
+	"embed"
 	"fmt"
 	"github.com/charmbracelet/log"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/db"
-	pb "github.com/zcubbs/power/proto/gen"
+	pb "github.com/zcubbs/power/proto/gen/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
+	"io/fs"
 	"net"
 	"net/http"
 )
@@ -20,14 +22,16 @@ import (
 type Server struct {
 	pb.UnimplementedBlueprintServiceServer
 
-	store db.Store
-	cfg   config.Configuration
+	store     db.Store
+	cfg       config.Configuration
+	embedOpts []EmbedAssetsOpts
 }
 
-func NewServer(store db.Store, cfg config.Configuration) (*Server, error) {
+func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAssetsOpts) (*Server, error) {
 	return &Server{
-		store: store,
-		cfg:   cfg,
+		store:     store,
+		cfg:       cfg,
+		embedOpts: embedOpts,
 	}, nil
 }
 
@@ -41,6 +45,9 @@ func (s *Server) StartGrpcServer() {
 		if err != nil {
 			log.Fatal("cannot create new server tls options", "error", err)
 		}
+	} else {
+		log.Warn("🔴 grpc server is running without TLS")
+		tlsOpt = grpc.EmptyServerOption{}
 	}
 
 	grpcServer := grpc.NewServer(grpcLogger, tlsOpt)
@@ -73,6 +80,12 @@ func (s *Server) StartHttpGateway() {
 	}
 
 	mux := http.NewServeMux()
+
+	// add embedded assets handler
+	for _, opts := range s.embedOpts {
+		mux.Handle(opts.Path, newFileServerHandler(opts))
+	}
+
 	// add grpc handler
 	mux.Handle("/", grpcMux)
 	handler := HttpLogger(mux)
@@ -111,4 +124,22 @@ func newServerTlsOptions(cfg config.GrpcServerConfig) (grpc.ServerOption, error)
 
 	// Create the TLS credentials
 	return grpc.Creds(credentials.NewServerTLSFromCert(&certificate)), nil
+}
+
+type EmbedAssetsOpts struct {
+	// The directory to embed.
+	Dir    embed.FS
+	Path   string
+	Prefix string
+}
+
+func newFileServerHandler(opts EmbedAssetsOpts) http.Handler {
+	log.Info("serving embedded assets", "path", opts.Path)
+	sub, err := fs.Sub(opts.Dir, opts.Prefix)
+	if err != nil {
+		log.Fatal("cannot serve embedded assets", "error", err)
+	}
+	dir := http.FileServer(http.FS(sub))
+
+	return http.StripPrefix(opts.Path, dir)
 }

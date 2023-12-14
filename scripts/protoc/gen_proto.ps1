@@ -20,7 +20,7 @@ if (-not (Test-Path -Path $ProtoGenDir)) {
 }
 
 # Generate Go code from proto files
-$protoFile = $ProtoDir + "\*.proto"
+$protoFile = $ProtoDir + "\v1\*.proto"
 &protoc --proto_path=$ProtoDir `
           --go_out=$ProtoGenDir `
           --go_opt=paths=source_relative `

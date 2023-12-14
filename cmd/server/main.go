@@ -5,6 +5,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/zcubbs/power/cmd/server/api"
 	"github.com/zcubbs/power/cmd/server/config"
+	"github.com/zcubbs/power/cmd/server/docs"
 )
 
 var (
@@ -21,15 +22,23 @@ func init() {
 	flag.Parse()
 
 	// Load configuration
+	log.Info("loading configuration...")
 	var err error
 	cfg, err = config.Load(*configPath)
 	if err != nil {
-		log.Fatalf("Error loading configuration error=%s", err)
+		log.Fatal("failed to load configuration", "error", err)
 	}
 
 	cfg.Version = Version
 	cfg.Commit = Commit
 	cfg.Date = Date
+
+	if cfg.Debug {
+		log.SetLevel(log.DebugLevel)
+		config.PrintConfiguration(*cfg)
+	}
+
+	log.Info("loaded configuration")
 }
 
 func main() {
@@ -49,7 +58,11 @@ func main() {
 	// TODO: implement dbUtil.InitAdminUser(store, cfg)
 
 	// Create gRPC Server
-	gs, err := api.NewServer(nil, *cfg)
+	gs, err := api.NewServer(nil, *cfg, api.EmbedAssetsOpts{
+		Dir:    docs.SwaggerDist,
+		Path:   "/swagger/",
+		Prefix: "swagger",
+	})
 	if err != nil {
 		log.Fatal("failed to create grpc server", "error", err)
 	}

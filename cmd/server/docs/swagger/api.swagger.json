@@ -1,8 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "empty.proto",
-    "version": "version not set"
+    "title": "Power API",
+    "version": "0.1.0",
+    "contact": {
+      "name": "Power API",
+      "url": "https://github.com/zcubbs/power",
+      "email": "zcubbs@pm.me"
+    }
   },
   "tags": [
     {
@@ -23,7 +28,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbGenerateProjectResponse"
+              "$ref": "#/definitions/v1GenerateProjectResponse"
             }
           },
           "default": {
@@ -39,7 +44,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbGenerateProjectRequest"
+              "$ref": "#/definitions/v1GenerateProjectRequest"
             }
           }
         ],
@@ -50,29 +55,6 @@
     }
   },
   "definitions": {
-    "pbGenerateProjectRequest": {
-      "type": "object",
-      "properties": {
-        "blueprint": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "map of options"
-        }
-      }
-    },
-    "pbGenerateProjectResponse": {
-      "type": "object",
-      "properties": {
-        "downloadUrl": {
-          "type": "string"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -98,6 +80,29 @@
             "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1GenerateProjectRequest": {
+      "type": "object",
+      "properties": {
+        "blueprint": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "map of options"
+        }
+      }
+    },
+    "v1GenerateProjectResponse": {
+      "type": "object",
+      "properties": {
+        "downloadUrl": {
+          "type": "string"
         }
       }
     }

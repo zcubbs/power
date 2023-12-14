@@ -7,7 +7,7 @@ tasks:
     desc: Generate protobuf code and manage .proto files
     cmds:
       - task: "gen:{{OS}}"
-      - task: "copy:proto:{{OS}}"
+#      - task: "copy:proto:{{OS}}"
 
   ############################################################
   # Iterate over PROTO_DIRS and delete *.pb.go files

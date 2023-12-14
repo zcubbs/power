@@ -5,6 +5,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
+	"github.com/zcubbs/x/pretty"
 	"strings"
 	"sync"
 )
@@ -67,4 +68,9 @@ func loadEnv() {
 	if err != nil {
 		log.Debug("no .env file found")
 	}
+}
+
+func PrintConfiguration(config Configuration) {
+	// Print out the configuration
+	pretty.PrintJson(config)
 }

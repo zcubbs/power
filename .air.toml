@@ -3,9 +3,9 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-#  args_bin = ["-config", "examples/config.yaml"]
+  args_bin = ["-config", "tests/config.yaml"]
   bin = "tmp/server.exe"
-  cmd = "go build -o ./tmp/server.exe ./server/main.go"
+  cmd = "go build -o ./tmp/server.exe ./cmd/server/main.go"
   delay = 1000
   include_dir = ["cmd"]
   include_ext = ["go", "tpl", "tmpl", "html"]

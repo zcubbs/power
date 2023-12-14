@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.17.3
-// source: service_power.proto
+// source: v1/service_power.proto
 
 package power
 
@@ -35,7 +35,7 @@ func NewBlueprintServiceClient(cc grpc.ClientConnInterface) BlueprintServiceClie
 
 func (c *blueprintServiceClient) GenerateProject(ctx context.Context, in *GenerateProjectRequest, opts ...grpc.CallOption) (*GenerateProjectResponse, error) {
 	out := new(GenerateProjectResponse)
-	err := c.cc.Invoke(ctx, "/pb.BlueprintService/GenerateProject", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.v1.BlueprintService/GenerateProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _BlueprintService_GenerateProject_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.BlueprintService/GenerateProject",
+		FullMethod: "/pb.v1.BlueprintService/GenerateProject",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BlueprintServiceServer).GenerateProject(ctx, req.(*GenerateProjectRequest))
@@ -92,7 +92,7 @@ func _BlueprintService_GenerateProject_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BlueprintService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.BlueprintService",
+	ServiceName: "pb.v1.BlueprintService",
 	HandlerType: (*BlueprintServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -101,5 +101,5 @@ var BlueprintService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "service_power.proto",
+	Metadata: "v1/service_power.proto",
 }
