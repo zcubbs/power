@@ -9,6 +9,7 @@ vars:
   SCRIPTS_DIR: scripts
   PROTO_DIR: "proto"
   PROTO_GEN_DIR: "proto/gen"
+  OPENAPI_GEN_DIR: "cmd/server/docs/swagger"
 
 includes:
   scan: .taskfiles/scan.yaml

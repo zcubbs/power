@@ -41,17 +41,8 @@ tasks:
   gen:windows:
     desc: Generate proto code for Windows
     cmds:
-      - >-
-        powershell -Command foreach ($dir in $env:PROTO_DIRS) {
-        protoc --proto_path=$dir
-          --go_out=$dir
-          --go_opt=paths=source_relative
-          --go-grpc_out=$dir
-          --go-grpc_opt=paths=source_relative
-          --grpc-gateway_out=$dir
-          --grpc-gateway_opt=paths=source_relative
-          --openapiv2_out=$dir
-          --openapiv2_opt=allow_merge=true,merge_file_name=api $dir/*.proto }
+      - cmd: echo "PROTO_DIR={{.PROTO_DIR}} PROTO_GEN_DIR={{.PROTO_GEN_DIR}}"
+      - cmd: "powershell -ExecutionPolicy Bypass -Command {{.SCRIPTS_DIR}}/protoc/gen_proto.ps1 -ProtoDir {{.PROTO_DIR}} -ProtoGenDir {{.PROTO_GEN_DIR}} -OpenapiGenDir {{.OPENAPI_GEN_DIR}}"
 
   gen:darwin:
     desc: Generate proto code for MacOS
@@ -63,7 +54,7 @@ tasks:
     cmds:
       - cmd: chmod +x {{.SCRIPTS_DIR}}/protoc/gen_proto.sh
       - cmd: echo "PROTO_DIR={{.PROTO_DIR}} PROTO_GEN_DIR={{.PROTO_GEN_DIR}}"
-      - cmd: "{{.SCRIPTS_DIR}}/protoc/gen_proto.sh {{.PROTO_DIR}} {{.PROTO_GEN_DIR}}"
+      - cmd: "{{.SCRIPTS_DIR}}/protoc/gen_proto.sh {{.PROTO_DIR}} {{.PROTO_GEN_DIR}} {{.OPENAPI_GEN_DIR}}"
 
   ############################################################
   # Iterate over PROTO_DIRS and copy *.proto files to pb/

@@ -2,11 +2,11 @@
 // source: service_power.proto
 
 /*
-Package proto is a reverse proxy.
+Package power is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package power
 
 import (
 	"context"
@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_Blueprint_GenerateProject_0(ctx context.Context, marshaler runtime.Marshaler, client BlueprintClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateRequest
+func request_BlueprintService_GenerateProject_0(ctx context.Context, marshaler runtime.Marshaler, client BlueprintServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GenerateProjectRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -48,8 +48,8 @@ func request_Blueprint_GenerateProject_0(ctx context.Context, marshaler runtime.
 
 }
 
-func local_request_Blueprint_GenerateProject_0(ctx context.Context, marshaler runtime.Marshaler, server BlueprintServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateRequest
+func local_request_BlueprintService_GenerateProject_0(ctx context.Context, marshaler runtime.Marshaler, server BlueprintServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GenerateProjectRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -65,13 +65,13 @@ func local_request_Blueprint_GenerateProject_0(ctx context.Context, marshaler ru
 
 }
 
-// RegisterBlueprintHandlerServer registers the http handlers for service Blueprint to "mux".
-// UnaryRPC     :call BlueprintServer directly.
+// RegisterBlueprintServiceHandlerServer registers the http handlers for service BlueprintService to "mux".
+// UnaryRPC     :call BlueprintServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterBlueprintHandlerFromEndpoint instead.
-func RegisterBlueprintHandlerServer(ctx context.Context, mux *runtime.ServeMux, server BlueprintServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterBlueprintServiceHandlerFromEndpoint instead.
+func RegisterBlueprintServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server BlueprintServiceServer) error {
 
-	mux.Handle("POST", pattern_Blueprint_GenerateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_BlueprintService_GenerateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -79,12 +79,12 @@ func RegisterBlueprintHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/power.Blueprint/GenerateProject", runtime.WithHTTPPathPattern("/v1/generate"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.BlueprintService/GenerateProject", runtime.WithHTTPPathPattern("/v1/generate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Blueprint_GenerateProject_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_BlueprintService_GenerateProject_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -92,16 +92,16 @@ func RegisterBlueprintHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_Blueprint_GenerateProject_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_BlueprintService_GenerateProject_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterBlueprintHandlerFromEndpoint is same as RegisterBlueprintHandler but
+// RegisterBlueprintServiceHandlerFromEndpoint is same as RegisterBlueprintServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterBlueprintHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterBlueprintServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
@@ -121,41 +121,41 @@ func RegisterBlueprintHandlerFromEndpoint(ctx context.Context, mux *runtime.Serv
 		}()
 	}()
 
-	return RegisterBlueprintHandler(ctx, mux, conn)
+	return RegisterBlueprintServiceHandler(ctx, mux, conn)
 }
 
-// RegisterBlueprintHandler registers the http handlers for service Blueprint to "mux".
+// RegisterBlueprintServiceHandler registers the http handlers for service BlueprintService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterBlueprintHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterBlueprintHandlerClient(ctx, mux, NewBlueprintClient(conn))
+func RegisterBlueprintServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterBlueprintServiceHandlerClient(ctx, mux, NewBlueprintServiceClient(conn))
 }
 
-// RegisterBlueprintHandlerClient registers the http handlers for service Blueprint
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "BlueprintClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "BlueprintClient"
+// RegisterBlueprintServiceHandlerClient registers the http handlers for service BlueprintService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "BlueprintServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "BlueprintServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "BlueprintClient" to call the correct interceptors.
-func RegisterBlueprintHandlerClient(ctx context.Context, mux *runtime.ServeMux, client BlueprintClient) error {
+// "BlueprintServiceClient" to call the correct interceptors.
+func RegisterBlueprintServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client BlueprintServiceClient) error {
 
-	mux.Handle("POST", pattern_Blueprint_GenerateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_BlueprintService_GenerateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/power.Blueprint/GenerateProject", runtime.WithHTTPPathPattern("/v1/generate"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.BlueprintService/GenerateProject", runtime.WithHTTPPathPattern("/v1/generate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Blueprint_GenerateProject_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_BlueprintService_GenerateProject_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Blueprint_GenerateProject_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_BlueprintService_GenerateProject_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -163,9 +163,9 @@ func RegisterBlueprintHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 var (
-	pattern_Blueprint_GenerateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "generate"}, ""))
+	pattern_BlueprintService_GenerateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "generate"}, ""))
 )
 
 var (
-	forward_Blueprint_GenerateProject_0 = runtime.ForwardResponseMessage
+	forward_BlueprintService_GenerateProject_0 = runtime.ForwardResponseMessage
 )

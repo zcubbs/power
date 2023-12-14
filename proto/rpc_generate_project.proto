@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/zcubbs/power";
+
+message GenerateProjectRequest {
+  string blueprint = 1;
+  // map of options
+  map<string, string> options = 2;
+}
+
+message GenerateProjectResponse {
+  string downloadUrl = 1;
+}

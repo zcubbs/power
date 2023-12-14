@@ -1,13 +1,14 @@
 syntax = "proto3";
 
-package power;
+package pb;
 
-option go_package = "github.com/zcubbs/power/proto";
+option go_package = "github.com/zcubbs/power";
 
 import "google/api/annotations.proto";
+import "rpc_generate_project.proto";
 
-service Blueprint {
-  rpc GenerateProject (GenerateRequest) returns (GenerateResponse) {
+service BlueprintService {
+  rpc GenerateProject (GenerateProjectRequest) returns (GenerateProjectResponse) {
     option (google.api.http) = {
       post: "/v1/generate"
       body: "*"
@@ -15,10 +16,4 @@ service Blueprint {
   }
 }
 
-message GenerateRequest {
-  string stack = 1;
-}
 
-message GenerateResponse {
-  string downloadUrl = 1;
-}
