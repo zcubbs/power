@@ -2,6 +2,12 @@
 
 Project Power is a dynamic project generation system designed to create project structures based on user-defined specifications. It utilizes a flexible blueprint system, allowing for extensible and customizable project configurations.
 
+---
+<center>
+<img src="docs/assets/power.png" />
+</center>
+---
+
 ## Features
 
 - **Dynamic Blueprint System**: Supports various technology stacks with the ability to add new ones through plugins.
@@ -73,38 +79,4 @@ To create a new plugin for the system, follow these steps:
 
 ### Example Plugin Structure
 
-```go
-// yourplugin.go
-
-package main
-
-import (
-    "path/to/your/blueprint"
-)
-
-type YourPluginGenerator struct{}
-
-func (g *YourPluginGenerator) Generate(spec blueprint.ComponentSpec, outputPath string) error {
-    // Your generation logic here
-    return nil
-}
-
-// Exported as a symbol named 'Plugin'
-var Plugin YourPluginGenerator
-```
-
-## API Documentation
-
-TODO
-
-## Contributing
-
-TODO
-
-## License
-
-TODO
-
-## Contact
-
-TODO
+wip...
