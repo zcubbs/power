@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/zcubbs/power/blueprint"
+	"github.com/zcubbs/power/blueprint/go/apiserver"
 )
 
 // ProjectSpec represents the overall project specification.
@@ -66,5 +67,14 @@ func validateComponentConfig(component blueprint.ComponentSpec, spec blueprint.B
 			}
 		}
 	}
+	return nil
+}
+
+// EnableBuiltinGenerators Register Built-in Generators
+func EnableBuiltinGenerators() error {
+	if err := apiserver.Register(); err != nil {
+		return err
+	}
+
 	return nil
 }

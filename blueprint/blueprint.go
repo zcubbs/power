@@ -3,7 +3,7 @@ package blueprint
 import (
 	"fmt"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"os"
 	"sync"
 )
 
@@ -92,7 +92,7 @@ func GenerateComponent(spec ComponentSpec, outputPath string) error {
 
 // LoadBlueprintSpec reads and parses the YAML spec file for a blueprint.
 func LoadBlueprintSpec(filePath string) (*BlueprintSpec, error) {
-	data, err := ioutil.ReadFile(filePath)
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
@@ -100,4 +100,21 @@ func LoadBlueprintSpec(filePath string) (*BlueprintSpec, error) {
 	var spec BlueprintSpec
 	err = yaml.Unmarshal(data, &spec)
 	return &spec, err
+}
+
+// LoadBlueprintSpecFromBytes parses the YAML spec file for a blueprint from a byte array.
+func LoadBlueprintSpecFromBytes(data []byte) (*BlueprintSpec, error) {
+	var spec BlueprintSpec
+	err := yaml.Unmarshal(data, &spec)
+	return &spec, err
+}
+
+// GetAllBlueprintSpecs returns a map of all registered blueprint specs.
+func GetAllBlueprintSpecs() map[string]*BlueprintSpec {
+	specs := make(map[string]*BlueprintSpec)
+	blueprintSpecs.Range(func(key, value interface{}) bool {
+		specs[key.(string)] = value.(*BlueprintSpec)
+		return true
+	})
+	return specs
 }

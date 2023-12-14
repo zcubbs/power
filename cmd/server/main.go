@@ -3,9 +3,11 @@ package main
 import (
 	"flag"
 	"github.com/charmbracelet/log"
+	"github.com/zcubbs/power/blueprint"
 	"github.com/zcubbs/power/cmd/server/api"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/docs"
+	"github.com/zcubbs/power/designer"
 )
 
 var (
@@ -56,6 +58,16 @@ func main() {
 
 	// Initialize admin user
 	// TODO: implement dbUtil.InitAdminUser(store, cfg)
+
+	// Register Builtin Blueprints
+	err := designer.EnableBuiltinGenerators()
+	if err != nil {
+		log.Fatal("failed to register builtin blueprints", "error", err)
+	}
+
+	for k, bp := range blueprint.GetAllBlueprintSpecs() {
+		log.Info("registered blueprint", "name", k, "version", bp.Name)
+	}
 
 	// Create gRPC Server
 	gs, err := api.NewServer(nil, *cfg, api.EmbedAssetsOpts{

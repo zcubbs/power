@@ -1,6 +1,9 @@
 package apiserver
 
-import "github.com/zcubbs/power/blueprint"
+import (
+	_ "embed"
+	"github.com/zcubbs/power/blueprint"
+)
 
 type Generator struct{}
 
@@ -9,9 +12,14 @@ func (g *Generator) Generate(spec blueprint.ComponentSpec, outputPath string) er
 	return nil
 }
 
-func init() {
-	err := blueprint.RegisterGenerator("go-api-server", &Generator{})
+//go:embed golang-spec.yaml
+var specFS []byte
+
+func Register() error {
+	spec, err := blueprint.LoadBlueprintSpecFromBytes(specFS)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	blueprint.RegisterBlueprintSpec("go-api-server", spec)
+	return blueprint.RegisterGenerator("go-api-server", &Generator{})
 }

@@ -1,0 +1,23 @@
+# curl -X POST http://localhost:8080/v1/generateproject
+#     -H "Content-Type: application/json"
+#     -d '{
+#            "blueprint": "example_blueprint",
+#            "options": {
+#                "option1": "value1",
+#                "option2": "value2"
+#             }
+#         }'
+POST http://localhost:8000/v1/generate
+Content-Type: application/json
+
+{
+  "blueprint": "go-api-server",
+  "options": {
+    "httpRouter": "go-fiber",
+    "database": "postgres",
+    "enableLogging": "true"
+  }
+}
+
+###
+
