@@ -2,11 +2,9 @@
 
 Project Power is a dynamic project generation system designed to create project structures based on user-defined specifications. It utilizes a flexible blueprint system, allowing for extensible and customizable project configurations.
 
----
 <center>
 <img src="docs/assets/power.png" />
 </center>
----
 
 ## Features
 
