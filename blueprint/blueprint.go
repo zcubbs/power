@@ -18,18 +18,26 @@ type ComponentGenerator interface {
 	Generate(spec ComponentSpec, outputPath string) error
 }
 
-// BlueprintSpec represents the structure of a YAML blueprint spec.
-type BlueprintSpec struct {
-	Name        string            `yaml:"name"`
-	Description string            `yaml:"description"`
-	Options     []BlueprintOption `yaml:"options"`
+// Spec BlueprintSpec represents the structure of a YAML blueprint spec.
+type Spec struct {
+	Name        string   `yaml:"name"`
+	Description string   `yaml:"description"`
+	Options     []Option `yaml:"options"`
 }
 
-type BlueprintOption struct {
+func (b *Spec) String() string {
+	return fmt.Sprintf("Name: %s, Description: %s", b.Name, b.Description)
+}
+
+type Option struct {
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
 	Type        string   `yaml:"type"`
 	Choices     []string `yaml:"choices,omitempty"`
+}
+
+func (b *Option) String() string {
+	return fmt.Sprintf("Name: %s, Description: %s, Type: %s, Choices: %v", b.Name, b.Description, b.Type, b.Choices)
 }
 
 // Generators is a map that holds all registered blueprint generators.
@@ -47,7 +55,7 @@ func RegisterGenerator(name string, generator ComponentGenerator) error {
 }
 
 // RegisterBlueprintSpec registers the spec for a given blueprint type.
-func RegisterBlueprintSpec(blueprintType string, spec *BlueprintSpec) {
+func RegisterBlueprintSpec(blueprintType string, spec *Spec) {
 	blueprintSpecs.Store(blueprintType, spec)
 }
 
@@ -61,13 +69,13 @@ func GetGenerator(name string) (ComponentGenerator, bool) {
 }
 
 // GetBlueprintSpec retrieves the spec for a given blueprint type.
-func GetBlueprintSpec(blueprintType string) (*BlueprintSpec, error) {
+func GetBlueprintSpec(blueprintType string) (*Spec, error) {
 	spec, ok := blueprintSpecs.Load(blueprintType)
 	if !ok {
 		return nil, fmt.Errorf("no spec found for blueprint type: %s", blueprintType)
 	}
 
-	blueprintSpec, ok := spec.(*BlueprintSpec)
+	blueprintSpec, ok := spec.(*Spec)
 	if !ok {
 		return nil, fmt.Errorf("invalid spec type for blueprint type: %s", blueprintType)
 	}
@@ -91,29 +99,29 @@ func GenerateComponent(spec ComponentSpec, outputPath string) error {
 }
 
 // LoadBlueprintSpec reads and parses the YAML spec file for a blueprint.
-func LoadBlueprintSpec(filePath string) (*BlueprintSpec, error) {
+func LoadBlueprintSpec(filePath string) (*Spec, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	var spec BlueprintSpec
+	var spec Spec
 	err = yaml.Unmarshal(data, &spec)
 	return &spec, err
 }
 
 // LoadBlueprintSpecFromBytes parses the YAML spec file for a blueprint from a byte array.
-func LoadBlueprintSpecFromBytes(data []byte) (*BlueprintSpec, error) {
-	var spec BlueprintSpec
+func LoadBlueprintSpecFromBytes(data []byte) (*Spec, error) {
+	var spec Spec
 	err := yaml.Unmarshal(data, &spec)
 	return &spec, err
 }
 
 // GetAllBlueprintSpecs returns a map of all registered blueprint specs.
-func GetAllBlueprintSpecs() map[string]*BlueprintSpec {
-	specs := make(map[string]*BlueprintSpec)
+func GetAllBlueprintSpecs() map[string]*Spec {
+	specs := make(map[string]*Spec)
 	blueprintSpecs.Range(func(key, value interface{}) bool {
-		specs[key.(string)] = value.(*BlueprintSpec)
+		specs[key.(string)] = value.(*Spec)
 		return true
 	})
 	return specs

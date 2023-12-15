@@ -47,7 +47,7 @@ func GenerateProject(spec *ProjectSpec, outputPath string) error {
 
 // validateComponentConfig checks if the provided component configuration
 // aligns with the blueprint spec.
-func validateComponentConfig(component blueprint.ComponentSpec, spec blueprint.BlueprintSpec) error {
+func validateComponentConfig(component blueprint.ComponentSpec, spec blueprint.Spec) error {
 	for _, option := range spec.Options {
 		value, ok := component.Config[option.Name]
 		if !ok {
