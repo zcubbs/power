@@ -1,0 +1,32 @@
+version: '3'
+
+tasks:
+  ############################################################
+  default:
+    desc: Run Containers
+    cmds:
+      - task: up
+
+  ############################################################
+  up:
+    desc: Run Containers
+    cmds:
+      - task: up:minio
+
+  up:minio:
+    desc: Run Minio
+    dir: "tools/minio"
+    cmds:
+      - docker-compose up -d
+
+  ############################################################
+  down:
+    desc: Stop Containers
+    cmds:
+      - task: down:minio
+
+  down:minio:
+    desc: Stop Minio
+    dir: "tools/minio"
+    cmds:
+      - docker-compose down

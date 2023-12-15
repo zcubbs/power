@@ -21,6 +21,7 @@ includes:
   run: .taskfiles/run.yaml
   lint: .taskfiles/lint.yaml
   tools: .taskfiles/tools.yaml
+  containers: .taskfiles/containers.yaml
 
 tasks:
   default:

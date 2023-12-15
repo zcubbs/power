@@ -36,6 +36,11 @@ var (
 		"database.postgres.cert_key":      "",
 		"database.postgres.max_conns":     10,
 		"database.postgres.min_conns":     4,
+		"minio.endpoint":                  "localhost:9010",
+		"minio.access_key":                "minioadmin",
+		"minio.secret_key":                "minioadmin",
+		"minio.use_ssl":                   false,
+		"minio.bucket_name":               "power",
 	}
 
 	allowedEnvVarKeys = []string{
@@ -65,5 +70,10 @@ var (
 		"database.postgres.cert_key",
 		"database.postgres.max_conns",
 		"database.postgres.min_conns",
+		"minio.endpoint",
+		"minio.access_key",
+		"minio.secret_key",
+		"minio.use_ssl",
+		"minio.bucket_name",
 	}
 )

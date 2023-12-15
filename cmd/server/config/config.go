@@ -8,6 +8,7 @@ type Configuration struct {
 	GrpcServer        GrpcServerConfig `mapstructure:"grpc_server"`
 	Database          DatabaseConfig   `mapstructure:"database"`
 	InitAdminPassword string           `mapstructure:"init_admin_password"`
+	Minio             MinioConfig      `mapstructure:"minio"`
 
 	// Version is the version of the application.
 	Version string `json:"version"`
@@ -71,4 +72,12 @@ type PostgresConfig struct {
 	MaxConns int32 `mapstructure:"max_conns" json:"max_conns"`
 	// MinConns is the minimum number of connections in the pool. Default value: 2
 	MinConns int32 `mapstructure:"min_conns" json:"min_conns"`
+}
+
+type MinioConfig struct {
+	Endpoint   string `mapstructure:"endpoint" json:"endpoint"`
+	AccessKey  string `mapstructure:"access_key" json:"access_key"`
+	SecretKey  string `mapstructure:"secret_key" json:"secret_key"`
+	UseSSL     bool   `mapstructure:"use_ssl" json:"use_ssl"`
+	BucketName string `mapstructure:"bucket_name" json:"bucket_name"`
 }

@@ -53,7 +53,7 @@ tasks:
     desc: Generate proto code for Linux
     cmds:
       - cmd: chmod +x {{.SCRIPTS_DIR}}/protoc/gen_proto.sh
-      - cmd: echo "PROTO_DIR={{.PROTO_DIR}} PROTO_GEN_DIR={{.PROTO_GEN_DIR}}"
+      - cmd: echo "PROTO_DIR={{.PROTO_DIR}} PROTO_GEN_DIR={{.PROTO_GEN_DIR}} OPENAPI_GEN_DIR={{.OPENAPI_GEN_DIR}}"
       - cmd: "{{.SCRIPTS_DIR}}/protoc/gen_proto.sh {{.PROTO_DIR}} {{.PROTO_GEN_DIR}} {{.OPENAPI_GEN_DIR}}"
 
   ############################################################

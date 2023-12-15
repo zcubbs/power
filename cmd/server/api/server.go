@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/db"
+	"github.com/zcubbs/power/pkg/miniohelper"
 	pb "github.com/zcubbs/power/proto/gen/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -22,16 +23,43 @@ import (
 type Server struct {
 	pb.UnimplementedBlueprintServiceServer
 
-	store     db.Store
-	cfg       config.Configuration
-	embedOpts []EmbedAssetsOpts
+	store       db.Store
+	minioClient *miniohelper.MinIOClient
+	cfg         config.Configuration
+	embedOpts   []EmbedAssetsOpts
 }
 
 func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAssetsOpts) (*Server, error) {
+	minioClient, err := miniohelper.New(
+		cfg.Minio.Endpoint,
+		cfg.Minio.AccessKey,
+		cfg.Minio.SecretKey,
+		cfg.Minio.UseSSL,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create minio client: %w", err)
+	}
+
+	// Create bucket if not exists
+	ok, err := minioClient.BucketExists(cfg.Minio.BucketName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
+	}
+
+	if !ok {
+		err = minioClient.MakeBucket(cfg.Minio.BucketName)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create bucket: %w", err)
+		}
+	}
+
+	log.Info("minio client created")
+
 	return &Server{
-		store:     store,
-		cfg:       cfg,
-		embedOpts: embedOpts,
+		store:       store,
+		minioClient: minioClient,
+		cfg:         cfg,
+		embedOpts:   embedOpts,
 	}, nil
 }
 

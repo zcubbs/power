@@ -40,8 +40,22 @@ func (s *Server) GenerateProject(ctx context.Context, req *pb.GenerateProjectReq
 
 	log.Debug("Generated project", "outputPath", outputPath)
 
-	// TODO: Create a URL or some mechanism to access the generated project
-	downloadURL := "http://example.com/download/generated/project.zip" // Update this URL as needed
+	zipFilePath := filepath.Join(outputPath, "project.zip")
 
-	return &pb.GenerateProjectResponse{DownloadUrl: downloadURL}, nil
+	// Upload the generated project to MinIO
+	_, err := s.minioClient.UploadFile(s.cfg.Minio.BucketName, req.Blueprint, zipFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload project to MinIO: %v", err)
+	}
+
+	downloadUrl, err := s.minioClient.GetDownloadURL(s.cfg.Minio.BucketName, req.Blueprint, 1*time.Hour)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get download url: %v", err)
+	}
+
+	// Generate a download URL for the uploaded file
+	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.Minio.BucketName, "object", req.Blueprint)
+	log.Debug("Generated download URL", "url", downloadUrl)
+
+	return &pb.GenerateProjectResponse{DownloadUrl: downloadUrl.String()}, nil
 }

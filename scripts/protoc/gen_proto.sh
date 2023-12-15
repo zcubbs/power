@@ -6,7 +6,7 @@
 set -e
 
 # Check if the correct number of arguments are provided
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <proto_dir> <gen_dir>"
     exit 1
 fi
@@ -35,7 +35,7 @@ protoc --proto_path=$PROTO_DIR \
        --grpc-gateway_out=$GEN_DIR \
        --grpc-gateway_opt=paths=source_relative \
        --openapiv2_out=$OPENAPI_GEN_DIR --openapiv2_opt=allow_merge,merge_file_name=api \
-       $PROTO_DIR/*.proto
+       $PROTO_DIR/v1/*.proto
 
 echo "Proto files have been successfully compiled."
 
