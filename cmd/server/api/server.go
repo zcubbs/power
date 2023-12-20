@@ -6,6 +6,7 @@ import (
 	"embed"
 	"fmt"
 	"github.com/charmbracelet/log"
+	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/db"
@@ -118,6 +119,13 @@ func (s *Server) StartHttpGateway() {
 	mux.Handle("/", grpcMux)
 	handler := HttpLogger(mux)
 
+	// Cors
+	origins := handlers.AllowedOrigins([]string{"*"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+	headers := handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
+	handler = handlers.CORS(origins, methods, headers)(handler)
+
+	// server options
 	httpSrv := &http.Server{
 		Addr:              fmt.Sprintf(":%d", s.cfg.HttpServer.Port),
 		ReadHeaderTimeout: s.cfg.HttpServer.ReadHeaderTimeout,
