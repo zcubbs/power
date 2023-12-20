@@ -1,53 +1,47 @@
-import React, {useEffect, useState} from 'react';
-import BlueprintSelector from './components/BlueprintSelector';
-import ConfigurationForm from './components/ConfigurationForm';
-import {fetchBlueprints, generateProject} from './api';
-import {Blueprint} from "./types.ts";
-import GenerateButton from "./components/GenerateButton.tsx";
+import React, { useState, useEffect } from 'react';
+import BlueprintTile from './components/BlueprintTile';
+import BlueprintCustomizationPopup from './components/BlueprintCustomizationPopup';
+import { fetchBlueprints, generateProject } from './api';
+import { Blueprint } from './types';
 
 const App: React.FC = () => {
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
-  const [selectedBlueprintType, setSelectedBlueprintType] = useState<string | null>(null);
-  const [configOptions, setConfigOptions] = useState<Record<string, any>>({});
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [selectedBlueprint, setSelectedBlueprint] = useState<Blueprint | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const loadBlueprints = async () => {
-      const fetchedBlueprints = await fetchBlueprints();
-      setBlueprints(fetchedBlueprints);
-      if (fetchedBlueprints.length > 0) {
-        setSelectedBlueprintType(fetchedBlueprints[0].type);
-      }
-    };
-    loadBlueprints().catch(console.error);
+    fetchBlueprints().then(setBlueprints);
   }, []);
 
-  const handleBlueprintSelect = (type: string) => {
-    setSelectedBlueprintType(type);
+  const handleUseBlueprint = (blueprint: Blueprint) => {
+    setSelectedBlueprint(blueprint);
+    setIsPopupOpen(true);
   };
 
-  const handleFormSubmit = async () => {
-    if (!selectedBlueprintType) return;
-
-    setIsGenerating(true);
-    try {
-      const downloadUrl = await generateProject(selectedBlueprintType, configOptions);
-      window.location.href = downloadUrl; // Trigger download
-    } catch (error) {
-      console.error('Error generating project:', error);
-      // Handle error appropriately
-    }
-    setIsGenerating(false);
+  const handleGenerate = async (options: Record<string, any>) => {
+    if (!selectedBlueprint) return;
+    const downloadUrl = await generateProject(selectedBlueprint.spec.id, options);
+    window.location.href = downloadUrl; // Trigger download
+    setIsPopupOpen(false);
   };
 
   return (
-    <div>
-      <BlueprintSelector blueprints={blueprints} onSelect={handleBlueprintSelect} selectedType={selectedBlueprintType}/>
-      {selectedBlueprintType && (
-        <ConfigurationForm blueprint={blueprints.find(b => b.type === selectedBlueprintType) ?? null}
-                           onSubmit={setConfigOptions}/>
+    <div className="bg-gray-900 text-white min-h-screen">
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold">Blueprints</h1>
+        <div className="grid grid-cols-3 gap-4">
+          {blueprints.map((blueprint) => (
+            <BlueprintTile key={blueprint.spec.id} blueprint={blueprint} onUse={handleUseBlueprint} />
+          ))}
+        </div>
+      </div>
+      {isPopupOpen && (
+        <BlueprintCustomizationPopup
+          blueprint={selectedBlueprint}
+          onClose={() => setIsPopupOpen(false)}
+          onGenerate={handleGenerate}
+        />
       )}
-      <GenerateButton onClick={handleFormSubmit} isGenerating={isGenerating}/>
     </div>
   );
 };

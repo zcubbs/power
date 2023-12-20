@@ -37,6 +37,6 @@ func Register() error {
 	if err != nil {
 		return err
 	}
-	blueprint.RegisterBlueprintSpec("go-api-server", spec)
-	return blueprint.RegisterGenerator("go-api-server", &Generator{})
+	blueprint.RegisterBlueprintSpec(spec.ID, spec)
+	return blueprint.RegisterGenerator(spec.ID, &Generator{})
 }

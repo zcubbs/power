@@ -19,7 +19,9 @@ export const fetchBlueprints = async (): Promise<Blueprint[]> => {
 
 export const generateProject = async (blueprintType: string, options: Record<string, any>): Promise<string> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/v1/generate`, { blueprintType, options });
+    const response = await axios.post(`${API_BASE_URL}/v1/generate`, {
+      blueprint: blueprintType,
+      options });
     return response.data.downloadUrl;
   } catch (error) {
     console.error('Error generating project:', error);

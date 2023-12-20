@@ -1,3 +1,4 @@
+id: "go-apiserver"
 name: "Go API Server"
 description: "A Go API Server"
 options:

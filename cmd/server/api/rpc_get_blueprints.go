@@ -11,7 +11,6 @@ func (s *Server) GetBlueprints(_ context.Context, req *pb.GetBlueprintListReques
 	blueprints := make([]*pb.Blueprint, 0)
 	for _, spec := range blueprint.GetAllBlueprintSpecs() {
 		blueprints = append(blueprints, &pb.Blueprint{
-			Type: spec.Name,
 			Spec: toSpecPb(spec),
 		})
 	}
@@ -32,6 +31,7 @@ func toSpecPb(spec *blueprint.Spec) *pb.Spec {
 	}
 
 	return &pb.Spec{
+		Id:          spec.ID,
 		Name:        spec.Name,
 		Description: spec.Description,
 		Options:     options,

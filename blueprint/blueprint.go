@@ -20,6 +20,7 @@ type ComponentGenerator interface {
 
 // Spec BlueprintSpec represents the structure of a YAML blueprint spec.
 type Spec struct {
+	ID          string   `yaml:"id"`
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
 	Options     []Option `yaml:"options"`

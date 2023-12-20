@@ -1,9 +1,9 @@
 export interface Blueprint {
-  type: string;
   spec: Spec;
 }
 
 export interface Spec {
+  id: string;
   name: string;
   description: string;
   options: Option[];
