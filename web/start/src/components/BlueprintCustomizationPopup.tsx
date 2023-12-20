@@ -41,7 +41,17 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
             ))}
           </select>
         );
-      // Add other cases for different types of inputs
+      case 'boolean':
+        return (
+          <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-blue-600"
+              checked={options[option.name]}
+              onChange={(e) => handleOptionChange(option.name, e.target.checked)}
+            />
+          </label>
+        );
       default:
         return null;
     }
