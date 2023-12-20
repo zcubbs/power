@@ -4,3 +4,10 @@ package pb.v1;
 
 option go_package = "github.com/zcubbs/power";
 
+import "v1/blueprint.proto";
+
+message GetBlueprintListRequest {}
+
+message GetBlueprintListResponse {
+  repeated Blueprint blueprints = 1;
+}

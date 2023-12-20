@@ -9,6 +9,7 @@ option go_package = "github.com/zcubbs/power";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "v1/rpc_generate_project.proto";
+import "v1/rpc_get_blueprints.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
@@ -27,6 +28,12 @@ service BlueprintService {
     option (google.api.http) = {
       post: "/v1/generate"
       body: "*"
+    };
+  }
+
+  rpc GetBlueprints (GetBlueprintListRequest) returns (GetBlueprintListResponse) {
+    option (google.api.http) = {
+      get: "/v1/blueprints"
     };
   }
 }

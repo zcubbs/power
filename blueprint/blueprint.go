@@ -33,6 +33,7 @@ type Option struct {
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
 	Type        string   `yaml:"type"`
+	Default     string   `yaml:"default,omitempty"`
 	Choices     []string `yaml:"choices,omitempty"`
 }
 

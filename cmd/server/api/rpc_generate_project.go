@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (s *Server) GenerateProject(ctx context.Context, req *pb.GenerateProjectRequest) (*pb.GenerateProjectResponse, error) {
+func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectRequest) (*pb.GenerateProjectResponse, error) {
 	// Convert the request options to a map[string]interface{} for the designer package
 	options := make(map[string]interface{})
 	for k, v := range req.Options {

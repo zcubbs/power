@@ -4,6 +4,7 @@ options:
   - name: "httpRouter"
     description: "Choose your HTTP router"
     type: "select"
+    default: "go-chi"
     choices:
       - "go-chi"
       - "go-fiber"
@@ -13,6 +14,7 @@ options:
   - name: "database"
     description: "Choose your database"
     type: "select"
+    default: "none"
     choices:
       - "postgres"
       - "sqlite"
@@ -20,3 +22,4 @@ options:
   - name: "enableLogging"
     description: "Enable request logging"
     type: "boolean"
+    default: "true"

@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BlueprintServiceClient interface {
 	GenerateProject(ctx context.Context, in *GenerateProjectRequest, opts ...grpc.CallOption) (*GenerateProjectResponse, error)
+	GetBlueprints(ctx context.Context, in *GetBlueprintListRequest, opts ...grpc.CallOption) (*GetBlueprintListResponse, error)
 }
 
 type blueprintServiceClient struct {
@@ -42,11 +43,21 @@ func (c *blueprintServiceClient) GenerateProject(ctx context.Context, in *Genera
 	return out, nil
 }
 
+func (c *blueprintServiceClient) GetBlueprints(ctx context.Context, in *GetBlueprintListRequest, opts ...grpc.CallOption) (*GetBlueprintListResponse, error) {
+	out := new(GetBlueprintListResponse)
+	err := c.cc.Invoke(ctx, "/pb.v1.BlueprintService/GetBlueprints", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BlueprintServiceServer is the server API for BlueprintService service.
 // All implementations must embed UnimplementedBlueprintServiceServer
 // for forward compatibility
 type BlueprintServiceServer interface {
 	GenerateProject(context.Context, *GenerateProjectRequest) (*GenerateProjectResponse, error)
+	GetBlueprints(context.Context, *GetBlueprintListRequest) (*GetBlueprintListResponse, error)
 	mustEmbedUnimplementedBlueprintServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedBlueprintServiceServer struct {
 
 func (UnimplementedBlueprintServiceServer) GenerateProject(context.Context, *GenerateProjectRequest) (*GenerateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateProject not implemented")
+}
+func (UnimplementedBlueprintServiceServer) GetBlueprints(context.Context, *GetBlueprintListRequest) (*GetBlueprintListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBlueprints not implemented")
 }
 func (UnimplementedBlueprintServiceServer) mustEmbedUnimplementedBlueprintServiceServer() {}
 
@@ -88,6 +102,24 @@ func _BlueprintService_GenerateProject_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlueprintService_GetBlueprints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBlueprintListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlueprintServiceServer).GetBlueprints(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.v1.BlueprintService/GetBlueprints",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlueprintServiceServer).GetBlueprints(ctx, req.(*GetBlueprintListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BlueprintService_ServiceDesc is the grpc.ServiceDesc for BlueprintService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var BlueprintService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateProject",
 			Handler:    _BlueprintService_GenerateProject_Handler,
+		},
+		{
+			MethodName: "GetBlueprints",
+			Handler:    _BlueprintService_GetBlueprints_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

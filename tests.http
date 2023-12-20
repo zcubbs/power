@@ -1,4 +1,4 @@
-# curl -X POST http://localhost:8080/v1/generateproject
+# curl -X POST http://localhost:8000/v1/generateproject
 #     -H "Content-Type: application/json"
 #     -d '{
 #            "blueprint": "example_blueprint",
@@ -18,6 +18,12 @@ Content-Type: application/json
     "enableLogging": "true"
   }
 }
+
+###
+# Get a list of all blueprints
+# curl http://localhost:8000/v1/blueprints
+
+GET http://localhost:8000/v1/blueprints
 
 ###
 
