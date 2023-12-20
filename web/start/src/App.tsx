@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import BlueprintTile from './components/BlueprintTile';
 import BlueprintCustomizationPopup from './components/BlueprintCustomizationPopup';
-import { fetchBlueprints, generateProject } from './api';
-import { Blueprint } from './types';
+import {fetchBlueprints, generateProject} from './api';
+import {Blueprint} from './types';
+import {ThemeProvider} from "./components/theme-provider.tsx";
 
 const App: React.FC = () => {
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
@@ -26,23 +27,25 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold">Blueprints</h1>
-        <div className="grid grid-cols-3 gap-4">
-          {blueprints.map((blueprint) => (
-            <BlueprintTile key={blueprint.spec.id} blueprint={blueprint} onUse={handleUseBlueprint} />
-          ))}
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <div className="text-white min-h-screen">
+        <div className="container mx-auto p-5">
+          <h1 className="text-3xl font-bold mb-5">Blueprints</h1>
+          <div className="grid grid-cols-3 gap-4">
+            {blueprints.map((blueprint) => (
+              <BlueprintTile key={blueprint.spec.id} blueprint={blueprint} onUse={handleUseBlueprint}/>
+            ))}
+          </div>
         </div>
+        {isPopupOpen && (
+          <BlueprintCustomizationPopup
+            blueprint={selectedBlueprint}
+            onClose={() => setIsPopupOpen(false)}
+            onGenerate={handleGenerate}
+          />
+        )}
       </div>
-      {isPopupOpen && (
-        <BlueprintCustomizationPopup
-          blueprint={selectedBlueprint}
-          onClose={() => setIsPopupOpen(false)}
-          onGenerate={handleGenerate}
-        />
-      )}
-    </div>
+    </ThemeProvider>
   );
 };
 

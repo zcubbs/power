@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Blueprint, Option } from '../types';
+import React, {useEffect, useState} from 'react';
+import {Blueprint, Option} from '../types';
+import {Switch} from "@/components/ui/switch.tsx";
 
 interface BlueprintCustomizationPopupProps {
   blueprint: Blueprint | null;
@@ -7,7 +8,7 @@ interface BlueprintCustomizationPopupProps {
   onGenerate: (options: Record<string, any>) => void;
 }
 
-const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = ({ blueprint, onClose, onGenerate }) => {
+const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = ({blueprint, onClose, onGenerate}) => {
   const [options, setOptions] = useState<Record<string, any>>({});
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
   }, [blueprint]);
 
   const handleOptionChange = (name: string, value: any) => {
-    setOptions({ ...options, [name]: value });
+    setOptions({...options, [name]: value});
   };
 
   if (!blueprint) return null;
@@ -30,9 +31,11 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
   const renderInputField = (option: Option) => {
     switch (option.type) {
       case 'text':
-        return <input type="text" value={options[option.name]} onChange={(e) => handleOptionChange(option.name, e.target.value)} />;
+        return <input type="text" value={options[option.name]}
+                      onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
       case 'number':
-        return <input type="number" value={options[option.name]} onChange={(e) => handleOptionChange(option.name, e.target.value)} />;
+        return <input type="number" value={options[option.name]}
+                      onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
       case 'select':
         return (
           <select value={options[option.name]} onChange={(e) => handleOptionChange(option.name, e.target.value)}>
@@ -43,14 +46,12 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
         );
       case 'boolean':
         return (
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 text-blue-600"
-              checked={options[option.name]}
-              onChange={(e) => handleOptionChange(option.name, e.target.checked)}
+          <div className="flex items-center space-x-2">
+            <Switch id="airplane-mode"
+                    checked={options[option.name]}
+                    onCheckedChange={() => handleOptionChange(option.name, !options[option.name])}
             />
-          </label>
+          </div>
         );
       default:
         return null;
@@ -59,7 +60,7 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md">
         <h3 className="text-lg font-bold">{blueprint.spec.name}</h3>
         <p>{blueprint.spec.description}</p>
         {blueprint.spec.options.map((option, idx) => (
@@ -68,7 +69,8 @@ const BlueprintCustomizationPopup: React.FC<BlueprintCustomizationPopupProps> = 
             {renderInputField(option)}
           </div>
         ))}
-        <button onClick={() => onGenerate(options)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
+        <button onClick={() => onGenerate(options)}
+                className="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-3">
           Generate
         </button>
         <button onClick={onClose} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-3">

@@ -66,7 +66,7 @@ func main() {
 	}
 
 	for k, bp := range blueprint.GetAllBlueprintSpecs() {
-		log.Info("registered blueprint", "name", k, "details", bp.String())
+		log.Info("registered blueprint", "id", k, "name", bp.Name)
 	}
 
 	// Create gRPC Server

@@ -8,7 +8,7 @@ interface BlueprintTileProps {
 
 const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint, onUse }) => {
   return (
-    <div className="bg-gray-800 text-white p-4 rounded-lg shadow-lg">
+    <div className="bg-gray-900 text-white p-4 rounded-lg shadow-lg">
       <h3 className="text-xl font-bold">{blueprint.spec.name}</h3>
       <p>{blueprint.spec.description}</p>
       <button

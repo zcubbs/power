@@ -1,6 +1,6 @@
 id: "go-apiserver"
 name: "Go API Server"
-description: "A Go API Server"
+description: "A Simple Go API Server Template"
 options:
   - name: "httpRouter"
     description: "Choose your HTTP router"
