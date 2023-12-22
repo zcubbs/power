@@ -2,10 +2,10 @@
 FROM nginx@sha256:2d32417c7e19818c490ba14ea9f41484cf500456b7f28f796d1698a3a2d0c3aa
 
 # Copy nginx config
-COPY build/nginx.conf /etc/nginx/nginx.conf
+ADD build/nginx.conf /etc/nginx/nginx.conf
 
 # Copy dist path files to nginx
-COPY web/start/dist/* /usr/share/nginx
+ADD web/start/dist/ /usr/share/nginx
 
 # Expose port 80
 EXPOSE 80
