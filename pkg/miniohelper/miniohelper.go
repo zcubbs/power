@@ -2,6 +2,7 @@ package miniohelper
 
 import (
 	"context"
+	"fmt"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"net/url"
@@ -55,4 +56,13 @@ func (c *MinIOClient) ListObjects(bucketName string) <-chan minio.ObjectInfo {
 
 func (c *MinIOClient) GetDownloadURL(bucketName, objectName string, expires time.Duration) (*url.URL, error) {
 	return c.Client.PresignedGetObject(context.Background(), bucketName, objectName, expires, nil)
+}
+
+func (c *MinIOClient) Ping() error {
+	ok := c.Client.IsOnline()
+	if !ok {
+		return fmt.Errorf("minio client is not online")
+	}
+
+	return nil
 }

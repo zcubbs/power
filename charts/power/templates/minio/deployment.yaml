@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "this.name" . }}-minio
+  labels:
+    {{- include "this.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "this.name" . }}-minio
+      app.kubernetes.io/instance: {{ .Release.Name }}-minio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "this.name" . }}-minio
+        app.kubernetes.io/instance: {{ .Release.Name }}-minio
+    spec:
+      containers:
+        - name: minio
+          image: quay.io/minio/minio:RELEASE.2023-12-14T18-51-57Z
+          args:
+            - server
+            - /storage
+          env:
+            # Minio access key and secret key
+            - name: MINIO_ROOT_USER
+              value: {{ .Values.minio.rootUser | quote }}
+            - name: MINIO_ROOT_PASSWORD
+              value: {{ .Values.minio.rootPassword | quote }}
+          ports:
+            - containerPort: 9000
+              hostPort: 9000
+              name: api
+            - containerPort: 9001
+              hostPort: 9001
+              name: console
+          # Mount the volume into the pod
+          volumeMounts:
+            - name: storage # must match the volume name, above
+              mountPath: "/storage"

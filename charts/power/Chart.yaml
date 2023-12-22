@@ -4,8 +4,3 @@ description: Project Power is a Blueprints & Starters EcoSystem
 type: application
 version: 0.1.7
 appVersion: 0.1.0
-
-dependencies:
-  - name: minio
-    version: 12.12.0
-    repository: "oci://registry-1.docker.io/bitnamicharts"

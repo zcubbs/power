@@ -41,6 +41,12 @@ func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAsset
 		return nil, fmt.Errorf("failed to create minio client: %w", err)
 	}
 
+	// Ping to check if minio is running
+	err = minioClient.Ping()
+	if err != nil {
+		return nil, fmt.Errorf("failed to ping minio client: %w", err)
+	}
+
 	// Create bucket if not exists
 	ok, err := minioClient.BucketExists(cfg.Minio.BucketName)
 	if err != nil {
