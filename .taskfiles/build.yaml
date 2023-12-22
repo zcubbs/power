@@ -12,7 +12,7 @@ tasks:
   ############################################################
   web:
     desc: Build Web App
-    dir: web
+    dir: web/start
     cmds:
       - npm install
       - npm run build
