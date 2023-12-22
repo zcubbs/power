@@ -23,7 +23,6 @@ on:
       - '.goreleaser.yaml'
       - 'examples/**'
       - '*.http'
-      - 'web/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
