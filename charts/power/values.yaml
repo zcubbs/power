@@ -25,7 +25,8 @@ server:
       name: grpc
       port: 9000
       targetPort: 9000
-      protocol: h2c
+      protocol: TCP
+      isH2c: true
       priority: 2
   resources:
   # limits:
