@@ -3,67 +3,107 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-image:
-  repository: ghcr.io/zcubbs/power
-  pullPolicy: Always
-  tag: "0.1.5"
+
 ingressRoute: # This is the IngressRoute resource for Traefik
   enabled: false
   entryPoints:
     - web # Replace with your entrypoint name. examples: web, websecure
-services:
-  server:
-    - domain: api.app.example.com # Replace with your domain
-      path: /v1/**
+
+server:
+  image:
+    repository: ghcr.io/zcubbs/power-server
+    pullPolicy: Always
+    tag: "0.1.5"
+  services:
+    - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
       port: 8000
       targetPort: 8000
       protocol: TCP
-    - domain: grpc.app.example.com # Replace with your domain
-      path: /
+      priority: 1
+    - match: Host(`api.app.example.com`)
       name: grpc
       port: 9000
       targetPort: 9000
-      protocol: TCP
-      # Additional route rules can be added here
-  web:
-    - domain: app.example.com # Replace with your domain
-      path: /
+      protocol: h2c
+      priority: 2
+  resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # Below are the placeholders for other configurations you may need.
+  # Customize them according to your requirements.
+  persistentVolume:
+    enabled: false
+    # accessModes:
+    #   - ReadWriteOnce
+    # size: 1Gi
+    # storageClass: ""
+    # existingClaim: ""
+  # Security context for the pod
+  securityContext:
+    enabled: false
+    # runAsUser: 1000
+    # fsGroup: 2000
+  # Configure environment variables for the container
+  env: []
+  # Configure readiness and liveness probes for the container
+  livenessProbe: {}
+  readinessProbe: {}
+  config: {}
+
+web:
+  image:
+    repository: ghcr.io/zcubbs/power-web
+    pullPolicy: Always
+    tag: "0.1.5"
+  services:
+    - match: Host(`app.example.com`)
       name: web
       port: 80
-      targetPort: 8000
+      targetPort: 80
       protocol: TCP
-resources:
-# limits:
-#   cpu: 100m
-#   memory: 128Mi
-# requests:
-#   cpu: 100m
-#   memory: 128Mi
+      priority: 3
+  resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # Below are the placeholders for other configurations you may need.
+  # Customize them according to your requirements.
+  persistentVolume:
+    enabled: false
+    # accessModes:
+    #   - ReadWriteOnce
+    # size: 1Gi
+    # storageClass: ""
+    # existingClaim: ""
+  # Security context for the pod
+  securityContext:
+    enabled: false
+    # runAsUser: 1000
+    # fsGroup: 2000
+  # Configure environment variables for the container
+  env: []
+  # Configure readiness and liveness probes for the container
+  livenessProbe: {}
+  readinessProbe: {}
+  config: {}
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
-# Below are the placeholders for other configurations you may need.
-# Customize them according to your requirements.
-persistentVolume:
-  enabled: false
-  # accessModes:
-  #   - ReadWriteOnce
-  # size: 1Gi
-  # storageClass: ""
-  # existingClaim: ""
-# Security context for the pod
-securityContext:
-  enabled: false
-  # runAsUser: 1000
-  # fsGroup: 2000
-# Configure environment variables for the container
-env: []
-# Configure readiness and liveness probes for the container
-livenessProbe: {}
-readinessProbe: {}
 imagePullSecrets: []
-config: {}
+
+###############################################################################
 minio:
   persistence:
     enabled: false

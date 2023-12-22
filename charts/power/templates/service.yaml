@@ -7,13 +7,13 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    {{- range .Values.services.server}}
+    {{- range .Values.server.services}}
     - name: {{ .name }}
       port: {{ .port }}
       targetPort: {{ .targetPort }}
       protocol: {{ .protocol }}
     {{- end}}
-    {{- range .Values.services.web}}
+    {{- range .Values.web.services}}
     - name: {{ .name }}
       port: {{ .port }}
       targetPort: {{ .targetPort }}
