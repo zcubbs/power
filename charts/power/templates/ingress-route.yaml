@@ -9,7 +9,14 @@ spec:
   entryPoints:
     {{- toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
   routes:
-    {{- range .Values.services }}
+    {{- range .Values.services.server }}
+    - match: Host(`{{ .domain }}`) && Path('{{.path}}')
+      kind: Rule
+      services:
+        - name: {{ .name }}
+          port: {{ .port }}
+    {{- end}}
+    {{- range .Values.services.web }}
     - match: Host(`{{ .domain }}`) && Path('{{.path}}')
       kind: Rule
       services:
