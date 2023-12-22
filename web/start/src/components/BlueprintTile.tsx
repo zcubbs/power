@@ -32,7 +32,6 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
       title: "Blueprint Generated",
       description: `Your '${blueprint.spec.name}' blueprint has been generated and is downloading.`,
       duration: 5000,
-      variant: "success",
     });
   };
 
