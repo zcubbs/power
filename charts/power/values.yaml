@@ -3,17 +3,15 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
 ingressRoute: # This is the IngressRoute resource for Traefik
   enabled: false
   entryPoints:
     - web # Replace with your entrypoint name. examples: web, websecure
-
 server:
   image:
     repository: ghcr.io/zcubbs/power-server
     pullPolicy: Always
-    tag: "0.1.5"
+    tag: "0.1.6"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
@@ -55,12 +53,11 @@ server:
   livenessProbe: {}
   readinessProbe: {}
   config: {}
-
 web:
   image:
     repository: ghcr.io/zcubbs/power-web
     pullPolicy: Always
-    tag: "0.1.5"
+    tag: "0.1.6"
   services:
     - match: Host(`app.example.com`)
       name: web
@@ -98,12 +95,10 @@ web:
   livenessProbe: {}
   readinessProbe: {}
   config: {}
-
 nodeSelector: {}
 tolerations: []
 affinity: {}
 imagePullSecrets: []
-
 ###############################################################################
 minio:
   persistence:
