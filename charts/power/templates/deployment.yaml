@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-server
-          image: "{{ .Values.server.image.repository }}-server:{{ .Values.server.image.tag }}"
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           ports:
             {{- range .Values.server.services }}
@@ -39,7 +39,7 @@ spec:
           env:
             {{- toYaml .Values.server.env | nindent 12 }}
         - name: {{ .Chart.Name }}-web
-          image: "{{ .Values.web.image.repository }}-web:{{ .Values.web.image.tag }}"
+          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
           imagePullPolicy: {{ .Values.web.image.pullPolicy }}
           ports:
             {{- range .Values.web.services }}
