@@ -36,7 +36,3 @@ spec:
             - containerPort: 9001
               hostPort: 9001
               name: console
-          # Mount the volume into the pod
-          volumeMounts:
-            - name: storage # must match the volume name, above
-              mountPath: "/storage"
