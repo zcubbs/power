@@ -14,21 +14,32 @@ builds:
       - arm64
     id: "server"
     dir: .
+    main: cmd/server/main.go
     hooks:
       pre:
         - task build:web
-        - task copy:web
-    main: cmd/server/main.go
+    ldflags:
+      - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.Date}}
+  - env: [CGO_ENABLED=0]
+    binary: cli
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    id: "cli"
+    dir: .
+    main: cmd/cli/main.go
     ldflags:
       - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.Date}}
 
 archives:
-  - id: server-archive
+  - id: cli-archive
     format: tar.gz
     files:
       - none*
     builds:
-      - server
+      - cli
     format_overrides:
       - goos: windows
         format: zip
@@ -40,13 +51,15 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
 
 dockers:
+  ################################################################################################
+  # SERVER
   - use: buildx
     goos: linux
     goarch: amd64
-    dockerfile: build/Dockerfile
+    dockerfile: build/Dockerfile.server
     image_templates:
-      - "ghcr.io/zcubbs/{{ .ProjectName }}:{{ .Version }}-amd64"
-      - "ghcr.io/zcubbs/{{ .ProjectName }}:latest-amd64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-server:{{ .Version }}-amd64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-server:latest-amd64"
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
@@ -56,25 +69,62 @@ dockers:
   - use: buildx
     goos: linux
     goarch: arm64
-    dockerfile: build/Dockerfile
+    dockerfile: build/Dockerfile.server
     image_templates:
-      - "ghcr.io/zcubbs/{{ .ProjectName }}:{{ .Version }}-arm64"
-      - "ghcr.io/zcubbs/{{ .ProjectName }}:latest-arm64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-server:{{ .Version }}-arm64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-server:latest-arm64"
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
+  ################################################################################################
+  # WEB
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: build/Dockerfile.web
+    image_templates:
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-amd64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-amd64"
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: build/Dockerfile.web
+    image_templates:
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-arm64"
+      - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-arm64"
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    ################################################################################################
 docker_manifests:
-  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}:{{ .Version }}
+  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}-server:{{ .Version }}
     image_templates:
-      - ghcr.io/zcubbs/{{ .ProjectName }}:{{ .Version }}-amd64
-      - ghcr.io/zcubbs/{{ .ProjectName }}:{{ .Version }}-arm64
-  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}:latest
+      - ghcr.io/zcubbs/{{ .ProjectName }}-server:{{ .Version }}-amd64
+      - ghcr.io/zcubbs/{{ .ProjectName }}-server:{{ .Version }}-arm64
+  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}-server:latest
     image_templates:
-      - ghcr.io/zcubbs/{{ .ProjectName }}:latest-amd64
-      - ghcr.io/zcubbs/{{ .ProjectName }}:latest-arm64
+      - ghcr.io/zcubbs/{{ .ProjectName }}-server:latest-amd64
+      - ghcr.io/zcubbs/{{ .ProjectName }}-server:latest-arm64
+  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}
+    image_templates:
+      - ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-amd64
+      - ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-arm64
+  - name_template: ghcr.io/zcubbs/{{ .ProjectName }}-web:latest
+    image_templates:
+      - ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-amd64
+      - ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-arm64
 changelog:
   sort: asc
   filters:
