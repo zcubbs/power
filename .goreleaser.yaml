@@ -1,10 +1,10 @@
 ---
 
 project_name: power
+
 before:
   hooks:
     - go mod tidy
-    - task build:web
 builds:
   - env: [CGO_ENABLED=0]
     binary: server
@@ -85,7 +85,6 @@ dockers:
     dockerfile: build/Dockerfile.web
     extra_files:
       - build/nginx.conf
-      - web/start/dist
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-amd64"
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-amd64"
@@ -101,7 +100,6 @@ dockers:
     dockerfile: build/Dockerfile.web
     extra_files:
       - build/nginx.conf
-      - web/start/dist
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-arm64"
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-arm64"
