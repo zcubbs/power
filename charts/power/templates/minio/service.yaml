@@ -16,4 +16,5 @@ spec:
       targetPort: 9001
       protocol: TCP
   selector:
-    app: {{ include "this.name" . }}-minio
+    app.kubernetes.io/name: {{ include "this.name" . }}-minio
+    app.kubernetes.io/instance: {{ .Release.Name }}-minio

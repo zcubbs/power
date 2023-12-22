@@ -22,6 +22,8 @@ spec:
           image: quay.io/minio/minio:RELEASE.2023-12-14T18-51-57Z
           args:
             - server
+            - --console-address
+            - ":9001"
             - /storage
           env:
             # Minio access key and secret key
