@@ -38,6 +38,8 @@ spec:
           resources:
             {{- toYaml .Values.server.resources | nindent 12 }}
           env:
+            - name: MINIO_ENDPOINT
+              value: minio:9000
             {{- toYaml .Values.server.env | nindent 12 }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
