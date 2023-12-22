@@ -39,14 +39,13 @@ func loadConfiguration(configFile string) (*Configuration, error) {
 		v.SetDefault(k, val)
 	}
 
-	// add allowed env vars
-	for _, key := range allowedEnvVarKeys {
-		err := viper.BindEnv(key, strings.ToUpper(key))
+	// Bind environment variables
+	for k, val := range envKeys {
+		err := v.BindEnv(k, strings.ToUpper(val))
 		if err != nil {
-			return nil, fmt.Errorf("error binding env var %s: %w", key, err)
+			fmt.Println("Error binding env var", val, err)
 		}
 	}
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if configFile != "" {
 		v.SetConfigFile(configFile)
