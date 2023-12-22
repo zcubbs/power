@@ -84,7 +84,6 @@ dockers:
     goarch: amd64
     dockerfile: build/Dockerfile.web
     extra_files:
-      - build/nginx.conf
       - web/start
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-amd64"
@@ -100,7 +99,6 @@ dockers:
     goarch: arm64
     dockerfile: build/Dockerfile.web
     extra_files:
-      - build/nginx.conf
       - web/start
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-arm64"
