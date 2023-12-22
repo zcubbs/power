@@ -31,6 +31,7 @@ func (b *Spec) String() string {
 }
 
 type Option struct {
+	ID          string   `yaml:"id"`
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
 	Type        string   `yaml:"type"`

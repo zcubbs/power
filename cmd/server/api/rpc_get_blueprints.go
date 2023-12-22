@@ -22,6 +22,7 @@ func toSpecPb(spec *blueprint.Spec) *pb.Spec {
 	options := make([]*pb.Option, 0)
 	for _, option := range spec.Options {
 		options = append(options, &pb.Option{
+			Id:          option.ID,
 			Name:        option.Name,
 			Type:        option.Type,
 			Description: option.Description,

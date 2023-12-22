@@ -16,9 +16,10 @@ message Spec {
 }
 
 message Option {
-  string name = 1;
-  string description = 2;
-  string type = 3;
-  string default = 4;
-  repeated string options = 5;
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string type = 4;
+  string default = 5;
+  repeated string options = 6;
 }

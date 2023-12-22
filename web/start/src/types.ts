@@ -10,6 +10,7 @@ export interface Spec {
 }
 
 export interface Option {
+  id: string;
   name: string;
   description: string;
   type: string;

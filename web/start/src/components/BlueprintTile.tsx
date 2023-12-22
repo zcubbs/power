@@ -1,23 +1,32 @@
 import React from 'react';
-import { Blueprint } from '../types';
+import {Blueprint} from '../types';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import BlueprintCustomizationDialog from "@/components/BlueprintCustomizationDialog.tsx";
+import {generateProject} from "@/api.ts";
 
 interface BlueprintTileProps {
   blueprint: Blueprint;
-  onUse: (blueprint: Blueprint) => void;
 }
 
-const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint, onUse }) => {
+const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
+
+  const handleGenerate = async (options: Record<string, any>) => {
+    if (!blueprint) return;
+    window.location.href = await generateProject(blueprint.spec.id, options); // Trigger download
+  };
+
   return (
-    <div className="bg-gray-900 text-white p-4 rounded-lg shadow-lg">
-      <h3 className="text-xl font-bold">{blueprint.spec.name}</h3>
-      <p>{blueprint.spec.description}</p>
-      <button
-        onClick={() => onUse(blueprint)}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-      >
-        Use
-      </button>
-    </div>
+    <Card className="rounded-lg shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">
+          {blueprint.spec.name}
+        </CardTitle>
+        <CardDescription>{blueprint.spec.description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <BlueprintCustomizationDialog blueprint={blueprint} onGenerate={handleGenerate}/>
+      </CardContent>
+    </Card>
   );
 };
 
