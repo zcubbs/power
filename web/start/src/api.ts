@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -7,9 +7,13 @@ interface Blueprint {
   spec: any; // Replace 'any' with a more specific type if you have a defined spec structure
 }
 
+type FetchBlueprintsResponse = {
+  blueprints: Blueprint[];
+};
+
 export const fetchBlueprints = async (): Promise<Blueprint[]> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/v1/blueprints`);
+    const response: AxiosResponse<FetchBlueprintsResponse> = await axios.get(`${API_BASE_URL}/v1/blueprints`);
     return response.data.blueprints;
   } catch (error) {
     console.error('Error fetching blueprints:', error);
@@ -17,9 +21,13 @@ export const fetchBlueprints = async (): Promise<Blueprint[]> => {
   }
 };
 
+type GenerateResponse = {
+  downloadUrl: string;
+};
+
 export const generateProject = async (blueprintType: string, options: Record<string, any>): Promise<string> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/v1/generate`, {
+    const response: AxiosResponse<GenerateResponse> = await axios.post(`${API_BASE_URL}/v1/generate`, {
       blueprint: blueprintType,
       options });
     return response.data.downloadUrl;

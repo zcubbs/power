@@ -13,6 +13,7 @@ import {
 import {Button} from "@/components/ui/button.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Combobox} from "@/components/ui/combobox.tsx";
+import {Input} from "@/components/ui/input.tsx";
 
 interface BlueprintCustomizationDialogProps {
   blueprint: Blueprint | null;
@@ -21,6 +22,7 @@ interface BlueprintCustomizationDialogProps {
 
 const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> = ({blueprint, onGenerate}) => {
   const [options, setOptions] = useState<Record<string, any>>({});
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // Initialize options with defaults
@@ -37,15 +39,20 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
     setOptions({...options, [name]: value});
   };
 
+  const handleGenerate = async (options: Record<string, string>) => {
+    setOpen(false);
+    onGenerate(options);
+  }
+
   if (!blueprint) return null;
 
   const renderInputField = (option: Option) => {
     switch (option.type) {
       case 'text':
-        return <input type="text" value={options[option.name]}
+        return <Input type="text" value={options[option.name]}
                       onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
       case 'number':
-        return <input type="number" value={options[option.name]}
+        return <Input type="number" value={options[option.name]}
                       onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
       case 'select':
         return (
@@ -71,11 +78,11 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Use</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[800px] max-w-full">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             Blueprint: {blueprint.spec.name}
@@ -94,7 +101,7 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
         ))}
         <Separator className="my-4"/>
         <DialogFooter className="sm:justify-start">
-          <Button className="btn btn-primary" onClick={() => onGenerate(options)}>
+          <Button className="btn btn-primary" onClick={() => handleGenerate(options)}>
             Generate
           </Button>
           <DialogClose asChild>
