@@ -11,7 +11,7 @@ server:
   image:
     repository: ghcr.io/zcubbs/power-server
     pullPolicy: Always
-    tag: "0.1.7"
+    tag: "0.1.8"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
@@ -57,7 +57,7 @@ web:
   image:
     repository: ghcr.io/zcubbs/power-web
     pullPolicy: Always
-    tag: "0.1.7"
+    tag: "0.1.8"
   services:
     - match: Host(`app.example.com`)
       name: web
@@ -99,7 +99,6 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 imagePullSecrets: []
-
 ###############################################################################
 minio:
   rootUser: minioadmin
