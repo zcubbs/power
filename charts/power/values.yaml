@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/zcubbs/power
   pullPolicy: Always
-  tag: "0.1.0"
+  tag: "0.1.5"
 ingressRoute: # This is the IngressRoute resource for Traefik
   enabled: false
   entryPoints:
@@ -56,7 +56,6 @@ livenessProbe: {}
 readinessProbe: {}
 imagePullSecrets: []
 config: {}
-
 minio:
   persistence:
     enabled: false
