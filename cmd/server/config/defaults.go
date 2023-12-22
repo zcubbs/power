@@ -8,8 +8,6 @@ const (
 )
 
 var (
-	viperConfigPaths = [...]string{"./config"}
-
 	defaults = map[string]interface{}{
 		"debug":                           false,
 		"http_server.port":                HttpPort,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -103,6 +104,8 @@ func GenerateComponent(spec ComponentSpec, outputPath string) error {
 
 // LoadBlueprintSpec reads and parses the YAML spec file for a blueprint.
 func LoadBlueprintSpec(filePath string) (*Spec, error) {
+	// sanitize paths
+	filePath = filepath.Join(filepath.Clean(filePath))
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err

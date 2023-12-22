@@ -12,7 +12,8 @@ type Generator struct{}
 
 func (g *Generator) Generate(spec blueprint.ComponentSpec, outputPath string) error {
 	// Create the output directory if it doesn't exist
-	err := os.MkdirAll(outputPath, 0755)
+	// perm 0750 is rwxr-x--- (owner can read, write, execute; group can read, execute; others can't do anything)
+	err := os.MkdirAll(outputPath, 0750)
 	if err != nil {
 		return err
 	}
@@ -26,7 +27,7 @@ func (g *Generator) Generate(spec blueprint.ComponentSpec, outputPath string) er
 	zipFilePath := filepath.Join(outputPath, "project.zip")
 
 	// Zip the contents of the output directory
-	return zip.ZipDirectory(outputPath, zipFilePath)
+	return zip.Directory(outputPath, zipFilePath)
 }
 
 //go:embed spec.yaml
