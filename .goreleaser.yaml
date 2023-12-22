@@ -4,6 +4,7 @@ project_name: power
 before:
   hooks:
     - go mod tidy
+    - task build:web
 builds:
   - env: [CGO_ENABLED=0]
     binary: server
@@ -15,9 +16,6 @@ builds:
     id: "server"
     dir: .
     main: cmd/server/main.go
-    hooks:
-      pre:
-        - task build:web
     ldflags:
       - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.Date}}
   - env: [CGO_ENABLED=0]
