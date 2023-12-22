@@ -41,7 +41,7 @@ func loadConfiguration(configFile string) (*Configuration, error) {
 
 	// add allowed env vars
 	for _, key := range allowedEnvVarKeys {
-		err := viper.BindEnv(key)
+		err := viper.BindEnv(key, strings.ToUpper(key))
 		if err != nil {
 			return nil, fmt.Errorf("error binding env var %s: %w", key, err)
 		}
