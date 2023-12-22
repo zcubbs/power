@@ -85,6 +85,8 @@ dockers:
     goos: linux
     goarch: amd64
     dockerfile: build/Dockerfile.web
+    extra_files:
+      - web/start/dist
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-amd64"
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-amd64"
@@ -98,6 +100,8 @@ dockers:
     goos: linux
     goarch: arm64
     dockerfile: build/Dockerfile.web
+    extra_files:
+      - web/start/dist
     image_templates:
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:{{ .Version }}-arm64"
       - "ghcr.io/zcubbs/{{ .ProjectName }}-web:latest-arm64"
