@@ -1,0 +1,19 @@
+{{- if .Values.ingressRoute.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "this.name" . }}
+  labels:
+    {{- include "this.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+    {{- toYaml .Values.ingressRoute.entryPoints | nindent 4 }}
+  routes:
+    {{- range .Values.services }}
+    - match: Host(`{{ .domain }}`) && Path('{{.path}}')
+      kind: Rule
+      services:
+        - name: {{ .name }}
+          port: {{ .port }}
+    {{- end}}
+{{- end }}

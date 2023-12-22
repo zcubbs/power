@@ -57,5 +57,19 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.Minio.BucketName, "object", req.Blueprint)
 	log.Debug("Generated download URL", "url", downloadUrl)
 
+	// clean up temp dir
+	err = os.RemoveAll(outputPath)
+	if err != nil {
+		log.Error("Failed to remove temp dir",
+			"package", "api",
+			"function", "GenerateProject",
+			"error", err,
+			"path", outputPath,
+		)
+
+		// return grpc internal error
+		return nil, fmt.Errorf(InternalRedactedError)
+	}
+
 	return &pb.GenerateProjectResponse{DownloadUrl: downloadUrl.String()}, nil
 }
