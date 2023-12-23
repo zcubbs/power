@@ -1,1 +1,4 @@
 debug: true
+
+minio:
+  download_base_path: "https://start.power.dev.8naps.com/storage"

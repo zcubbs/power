@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  server:
+    image: chrislusf/seaweedfs # use a remote image
+    container_name: seaweedfs-server
+    ports:
+      - "9333:9333"
+      - "19333:19333"
+      - "8333:8333"
+    command: "server -s3 -s3.config=/config.json -master.volumeSizeLimitMB=1024" # run the server with s3 support
+    volumes:
+      - ./config.json:/config.json # mount the config file
+

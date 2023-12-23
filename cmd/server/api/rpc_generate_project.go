@@ -7,6 +7,7 @@ import (
 	"github.com/zcubbs/power/blueprint"
 	"github.com/zcubbs/power/designer"
 	pb "github.com/zcubbs/power/proto/gen/v1"
+	"net/url"
 	"os"
 	"path/filepath"
 	"time"
@@ -43,18 +44,22 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	zipFilePath := filepath.Join(outputPath, "project.zip")
 
 	// Upload the generated project to MinIO
-	_, err := s.minioClient.UploadFile(s.cfg.Minio.BucketName, req.Blueprint, zipFilePath)
+	_, err := s.minioClient.UploadFile(s.cfg.S3.BucketName, req.Blueprint, zipFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upload project to MinIO: %v", err)
 	}
 
-	downloadUrl, err := s.minioClient.GetDownloadURL(s.cfg.Minio.BucketName, req.Blueprint, 1*time.Hour)
+	reqParams := make(url.Values)
+	filename := fmt.Sprintf("%s.zip", req.Blueprint)
+	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+
+	downloadUrl, err := s.minioClient.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 1*time.Hour, reqParams)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
 	}
 
 	// Generate a download URL for the uploaded file
-	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.Minio.BucketName, "object", req.Blueprint)
+	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.S3.BucketName, "object", req.Blueprint)
 	log.Debug("Generated download URL", "url", downloadUrl)
 
 	// clean up temp dir

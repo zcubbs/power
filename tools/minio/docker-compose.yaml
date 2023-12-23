@@ -7,6 +7,8 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      # URL for the MinIO server
+      MINIO_SERVER_URL: https://minio.example.com
     command: server --console-address ":9011" /data
     ports:
       - "9010:9000" # minio

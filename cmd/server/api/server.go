@@ -32,10 +32,10 @@ type Server struct {
 
 func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAssetsOpts) (*Server, error) {
 	minioClient, err := miniohelper.New(
-		cfg.Minio.Endpoint,
-		cfg.Minio.AccessKey,
-		cfg.Minio.SecretKey,
-		cfg.Minio.UseSSL,
+		cfg.S3.Endpoint,
+		cfg.S3.AccessKey,
+		cfg.S3.SecretKey,
+		cfg.S3.UseSSL,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create minio client: %w", err)
@@ -48,13 +48,13 @@ func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAsset
 	}
 
 	// Create bucket if not exists
-	ok, err := minioClient.BucketExists(cfg.Minio.BucketName)
+	ok, err := minioClient.BucketExists(cfg.S3.BucketName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
 	}
 
 	if !ok {
-		err = minioClient.MakeBucket(cfg.Minio.BucketName)
+		err = minioClient.MakeBucket(cfg.S3.BucketName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create bucket: %w", err)
 		}

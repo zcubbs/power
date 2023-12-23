@@ -34,11 +34,11 @@ var (
 		"database.postgres.cert_key":      "",
 		"database.postgres.max_conns":     10,
 		"database.postgres.min_conns":     4,
-		"minio.endpoint":                  "localhost:9010",
-		"minio.access_key":                "minioadmin",
-		"minio.secret_key":                "minioadmin",
-		"minio.use_ssl":                   false,
-		"minio.bucket_name":               "power",
+		"s3.endpoint":                     "localhost:8333",
+		"s3.access_key":                   "storage_access_key",
+		"s3.secret_key":                   "storage_secret_key",
+		"s3.use_ssl":                      false,
+		"s3.bucket_name":                  "power",
 	}
 
 	envKeys = map[string]string{
@@ -68,10 +68,10 @@ var (
 		"database.postgres.cert_key":      "DATABASE_POSTGRES_CERT_KEY",
 		"database.postgres.max_conns":     "DATABASE_POSTGRES_MAX_CONNS",
 		"database.postgres.min_conns":     "DATABASE_POSTGRES_MIN_CONNS",
-		"minio.endpoint":                  "MINIO_ENDPOINT",
-		"minio.access_key":                "MINIO_ACCESS_KEY",
-		"minio.secret_key":                "MINIO_SECRET_KEY",
-		"minio.use_ssl":                   "MINIO_USE_SSL",
-		"minio.bucket_name":               "MINIO_BUCKET_NAME",
+		"s3.endpoint":                     "S3_ENDPOINT",
+		"s3.access_key":                   "S3_ACCESS_KEY",
+		"s3.secret_key":                   "S3_SECRET_KEY",
+		"s3.use_ssl":                      "S3_USE_SSL",
+		"s3.bucket_name":                  "S3_BUCKET_NAME",
 	}
 )

@@ -19,6 +19,12 @@ tasks:
     cmds:
       - docker-compose up -d
 
+  up:seaweedfs:
+    desc: Run SeaweedFS
+    dir: "tools/seaweedfs"
+    cmds:
+      - docker-compose up -d
+
   ############################################################
   down:
     desc: Stop Containers
@@ -28,5 +34,11 @@ tasks:
   down:minio:
     desc: Stop Minio
     dir: "tools/minio"
+    cmds:
+      - docker-compose down
+
+  down:seaweedfs:
+    desc: Stop SeaweedFS
+    dir: "tools/seaweedfs"
     cmds:
       - docker-compose down

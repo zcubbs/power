@@ -54,8 +54,8 @@ func (c *MinIOClient) ListObjects(bucketName string) <-chan minio.ObjectInfo {
 	return c.Client.ListObjects(context.Background(), bucketName, minio.ListObjectsOptions{})
 }
 
-func (c *MinIOClient) GetDownloadURL(bucketName, objectName string, expires time.Duration) (*url.URL, error) {
-	return c.Client.PresignedGetObject(context.Background(), bucketName, objectName, expires, nil)
+func (c *MinIOClient) GetDownloadURL(bucketName, objectName string, expires time.Duration, reqParams url.Values) (*url.URL, error) {
+	return c.Client.PresignedGetObject(context.Background(), bucketName, objectName, expires, reqParams)
 }
 
 func (c *MinIOClient) Ping() error {
