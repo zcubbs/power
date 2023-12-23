@@ -3,8 +3,8 @@ package designer
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zcubbs/power/blueprint"
-	"github.com/zcubbs/power/blueprint/go/apiserver"
+	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/power/pkg/blueprint/go/apiserver"
 )
 
 // ProjectSpec represents the overall project specification.

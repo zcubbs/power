@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	"github.com/zcubbs/power/blueprint"
+	"github.com/zcubbs/power/pkg/blueprint"
 	pb "github.com/zcubbs/power/proto/gen/v1"
 )
 

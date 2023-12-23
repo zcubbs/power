@@ -2,7 +2,7 @@ package apiserver
 
 import (
 	_ "embed"
-	"github.com/zcubbs/power/blueprint"
+	"github.com/zcubbs/power/pkg/blueprint"
 	"github.com/zcubbs/power/pkg/zip"
 	"os"
 	"path/filepath"

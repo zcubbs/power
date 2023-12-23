@@ -3,7 +3,7 @@ package apiserver
 import (
 	"fmt"
 	"github.com/charmbracelet/log"
-	"github.com/zcubbs/power/blueprint"
+	"github.com/zcubbs/power/pkg/blueprint"
 	"os"
 	"path/filepath"
 	"text/template"

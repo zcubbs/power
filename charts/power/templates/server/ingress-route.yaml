@@ -12,7 +12,6 @@ spec:
     {{- range .Values.server.services }}
     - match: {{ .match }}
       kind: Rule
-      priority: {{ .priority }}}
       services:
         - name: {{ .name }}
           port: {{ .port }}
@@ -21,7 +20,6 @@ spec:
     {{- range .Values.web.services }}
     - match: {{ .match }}
       kind: Rule
-      priority: {{ .priority }}}
       services:
         - name: {{ .name }}
           port: {{ .port }}

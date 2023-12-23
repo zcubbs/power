@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"github.com/charmbracelet/log"
-	"github.com/zcubbs/power/blueprint"
 	"github.com/zcubbs/power/cmd/server/api"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/docs"
-	"github.com/zcubbs/power/designer"
+	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/power/pkg/designer"
 )
 
 var (
