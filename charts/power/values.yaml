@@ -15,7 +15,7 @@ server:
   image:
     repository: ghcr.io/zcubbs/power-server
     pullPolicy: IfNotPresent
-    tag: "0.1.20"
+    tag: "0.1.21"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
@@ -52,7 +52,8 @@ server:
     # runAsUser: 1000
     # fsGroup: 2000
   # Configure environment variables for the container
-#  env: []
+  #  env: []
+
   # Configure readiness and liveness probes for the container
   livenessProbe:
     httpGet:
@@ -72,7 +73,7 @@ web:
   image:
     repository: ghcr.io/zcubbs/power-web
     pullPolicy: IfNotPresent
-    tag: "0.1.20"
+    tag: "0.1.21"
   services:
     - match: Host(`app.example.com`)
       name: web
@@ -102,7 +103,8 @@ web:
     # runAsUser: 1000
     # fsGroup: 2000
   # Configure environment variables for the container
-#  env: []
+  #  env: []
+
   # Configure readiness and liveness probes for the container
   livenessProbe:
     httpGet:
@@ -150,7 +152,8 @@ storage:
     # runAsUser: 1000
     # fsGroup: 2000
   # Configure environment variables for the container
-#  env: []
+  #  env: []
+
   # Configure readiness and liveness probes for the container
   livenessProbe:
     tcpSocket:
