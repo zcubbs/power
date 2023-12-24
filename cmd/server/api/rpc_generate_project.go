@@ -44,7 +44,8 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	zipFilePath := filepath.Join(outputPath, "project.zip")
 
 	// Upload the generated project to MinIO
-	_, err := s.minioClient.UploadFile(s.cfg.S3.BucketName, req.Blueprint, zipFilePath)
+	objectName := fmt.Sprintf("%s-%s.zip", req.Blueprint, time.Now().Format("20060102150405"))
+	_, err := s.minioClient.UploadFile(s.cfg.S3.BucketName, objectName, zipFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upload project to MinIO: %v", err)
 	}
@@ -57,6 +58,9 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
 	}
+
+	// replace base url with the one from the config
+	downloadUrl.Scheme = s.cfg.S3.DownloadBasePath
 
 	// Generate a download URL for the uploaded file
 	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.S3.BucketName, "object", req.Blueprint)
