@@ -13,6 +13,8 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/storage-cm.yaml") . | sha256sum }}
       labels:
         app.kubernetes.io/name: {{ include "this.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -85,7 +87,7 @@ spec:
             {{- toYaml .Values.storage.env | nindent 12 }}
           volumeMounts:
             - mountPath: /config.json
-              name: {{ .Chart.Name }}-storage
+              name: {{ .Chart.Name }}-storage-config
               subPath: config.json
 
       {{- with .Values.nodeSelector }}
@@ -102,9 +104,9 @@ spec:
       {{- end }}
 
       volumes:
-        - name: {{ .Chart.Name }}-storage
+        - name: {{ .Chart.Name }}-storage-config
           persistentVolumeClaim:
-            claimName: {{ .Chart.Name }}-storage
+            claimName: {{ .Chart.Name }}-storage-cm
 
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8}}
