@@ -41,7 +41,7 @@ spec:
             {{- toYaml .Values.server.resources | nindent 12 }}
           env:
             - name: S3_ENDPOINT
-              value: {{ .Chart.Name }}-storage:8333
+              value: {{ .Chart.Name }}:8333
             {{- toYaml .Values.server.env | nindent 12 }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
