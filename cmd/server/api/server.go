@@ -38,13 +38,13 @@ func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAsset
 		cfg.S3.UseSSL,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create minio client: %w", err)
+		return nil, fmt.Errorf("failed to create s3 client: %w", err)
 	}
 
 	// Ping to check if minio is running
 	err = minioClient.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("failed to ping minio client: %w", err)
+		return nil, fmt.Errorf("failed to ping s3 client: %w", err)
 	}
 
 	// Create bucket if not exists
@@ -60,7 +60,7 @@ func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAsset
 		}
 	}
 
-	log.Info("minio client created")
+	log.Info("s3 client created")
 
 	return &Server{
 		store:       store,
