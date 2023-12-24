@@ -52,12 +52,6 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
-          command: ["/bin/sh", "-c", "/usr/bin/weed"]
-          args:
-            - server
-            - -s3
-            - -s3.config=/config.json
-            - -master.volumeSizeLimitMB={{ .Values.storage.volumeSizeLimitMB }}
           {{- if .Values.web.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.web.livenessProbe | nindent 12 }}
@@ -73,6 +67,12 @@ spec:
         - name: {{ .Chart.Name }}-storage
           image: "{{ .Values.storage.image }}"
           imagePullPolicy: {{ .Values.storage.pullPolicy }}
+          command: ["/bin/sh", "-c", "/usr/bin/weed"]
+          args:
+            - server
+            - -s3
+            - -s3.config=/config.json
+            - -master.volumeSizeLimitMB={{ .Values.storage.volumeSizeLimitMB }}
           ports:
             {{- range .Values.storage.services }}
             - name: {{ .name }}
