@@ -31,9 +31,9 @@ server:
       isH2c: true
       priority: 2
   resources:
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+   limits:
+     cpu: 100m
+     memory: 128Mi
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
@@ -81,12 +81,12 @@ web:
       protocol: TCP
       priority: 3
   resources:
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+   limits:
+     cpu: 10m
+     memory: 80Mi
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 10m
+  #   memory: 80Mi
   # Below are the placeholders for other configurations you may need.
   # Customize them according to your requirements.
   persistentVolume:
@@ -110,6 +110,12 @@ web:
       port: web
     initialDelaySeconds: 15
     periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: web
+    initialDelaySeconds: 5
+    periodSeconds: 10
   config: {}
 ###############################################################################
 storage:
@@ -123,9 +129,9 @@ storage:
       targetPort: 8333
       protocol: TCP
   resources:
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+   limits:
+     cpu: 100m
+     memory: 128Mi
   # requests:
   #   cpu: 100m
   #   memory: 128Mi

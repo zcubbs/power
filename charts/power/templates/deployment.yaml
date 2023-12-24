@@ -19,6 +19,7 @@ spec:
         app.kubernetes.io/name: {{ include "this.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}-server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -33,7 +34,6 @@ spec:
             httpGet:
               port: 8333
               path: /status
-              host: {{ .Chart.Name }}
             initialDelaySeconds: 10
             periodSeconds: 5
           {{- if .Values.server.livenessProbe }}
@@ -43,13 +43,12 @@ spec:
           {{- if .Values.server.readinessProbe }}
           readinessProbe:
             {{- toYaml .Values.server.readinessProbe | nindent 12 }}
-
           {{- end }}
           resources:
             {{- toYaml .Values.server.resources | nindent 12 }}
           env:
             - name: S3_ENDPOINT
-              value: {{ .Chart.Name }}:8333
+              value: localhost:8333
             {{- toYaml .Values.server.env | nindent 12 }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
