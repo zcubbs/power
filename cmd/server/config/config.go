@@ -80,6 +80,6 @@ type S3Config struct {
 	SecretKey      string `mapstructure:"secret_key" json:"secret_key"`
 	UseSSL         bool   `mapstructure:"use_ssl" json:"use_ssl"`
 	BucketName     string `mapstructure:"bucket_name" json:"bucket_name"`
-	DownloadHost   string `mapstructure:"download_base_path" json:"download_base_path"`
+	DownloadHost   string `mapstructure:"download_host" json:"download_host"`
 	DownloadScheme string `mapstructure:"download_scheme" json:"download_scheme"`
 }
