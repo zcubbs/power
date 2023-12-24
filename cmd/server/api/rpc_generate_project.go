@@ -63,6 +63,15 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	downloadUrl.Host = s.cfg.S3.DownloadHost
 	downloadUrl.Scheme = s.cfg.S3.DownloadScheme
 
+	// check if prefix is set and start with / if not add it
+	if s.cfg.S3.DownloadUrlPrefix != "" {
+		if s.cfg.S3.DownloadUrlPrefix[0] != '/' {
+			s.cfg.S3.DownloadUrlPrefix = "/" + s.cfg.S3.DownloadUrlPrefix
+		}
+
+		downloadUrl.Path = s.cfg.S3.DownloadUrlPrefix + downloadUrl.Path
+	}
+
 	// Generate a download URL for the uploaded file
 	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.S3.BucketName, "object", req.Blueprint)
 	log.Debug("Generated download URL", "url", downloadUrl)

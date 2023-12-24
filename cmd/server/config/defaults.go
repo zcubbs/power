@@ -41,6 +41,7 @@ var (
 		"s3.bucket_name":                  "power",
 		"s3.download_host":                "localhost:8333",
 		"s3.download_scheme":              "http",
+		"s3.download_url_prefix":          "",
 	}
 
 	envKeys = map[string]string{
@@ -77,5 +78,6 @@ var (
 		"s3.bucket_name":                  "S3_BUCKET_NAME",
 		"s3.download_host":                "S3_DOWNLOAD_HOST",
 		"s3.download_scheme":              "S3_DOWNLOAD_SCHEME",
+		"s3.download_url_prefix":          "S3_DOWNLOAD_URL_PREFIX",
 	}
 )

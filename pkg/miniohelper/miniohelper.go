@@ -66,3 +66,7 @@ func (c *MinIOClient) Ping() error {
 
 	return nil
 }
+
+func (c *MinIOClient) GetObject(bucketName, objectName string) (*minio.Object, error) {
+	return c.Client.GetObject(context.Background(), bucketName, objectName, minio.GetObjectOptions{})
+}
