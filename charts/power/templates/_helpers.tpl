@@ -51,12 +51,12 @@ Define the fullname template.
 {{/*
 Check if a map contains a key
 */}}
-{{- define "this.containsKey" -}}
+{{- define "chart.containsKey" -}}
 {{- $map := index . 0 -}}
-{{- $key := index . 1 -}}
+{{- $key := index . 1 | toString -}}
 {{- $found := false -}}
 {{- range $k, $v := $map -}}
-  {{- if eq $k $key -}}
+  {{- if eq ($k | toString) $key -}}
     {{- $found = true -}}
   {{- end -}}
 {{- end -}}

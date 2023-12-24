@@ -41,7 +41,7 @@ spec:
             {{- toYaml .Values.server.resources | nindent 12 }}
           env:
             {{- toYaml .Values.server.env | nindent 12 }}
-            {{- if not (include "this.containsKey" (list .Values.server.env "S3_ENDPOINT")) }}
+            {{- if not (include "chart.containsKey" (list .Values.server.env "S3_ENDPOINT")) }}
             - name: S3_ENDPOINT
               value: {{ include "this.name" . }}-storage:8333
             {{- end }}
