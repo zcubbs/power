@@ -3,12 +3,10 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
 nodeSelector: {}
 tolerations: []
 affinity: {}
 imagePullSecrets: []
-
 ingressRoute: # This is the IngressRoute resource for Traefik
   enabled: false
   entryPoints:
@@ -17,7 +15,7 @@ server:
   image:
     repository: ghcr.io/zcubbs/power-server
     pullPolicy: IfNotPresent
-    tag: "0.1.15"
+    tag: "0.1.16"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
@@ -64,7 +62,7 @@ web:
   image:
     repository: ghcr.io/zcubbs/power-web
     pullPolicy: IfNotPresent
-    tag: "0.1.15"
+    tag: "0.1.16"
   services:
     - match: Host(`app.example.com`)
       name: web
@@ -132,10 +130,10 @@ storage:
     # runAsUser: 1000
     # fsGroup: 2000
   # Configure environment variables for the container
-  env: [ ]
+  env: []
   # Configure readiness and liveness probes for the container
-  livenessProbe: { }
-  readinessProbe: { }
+  livenessProbe: {}
+  readinessProbe: {}
   config:
     accessKey: "storage_access_key"
     secretKey: "storage_secret_key"
