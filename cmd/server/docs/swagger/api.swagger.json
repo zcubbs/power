@@ -43,6 +43,28 @@
         ]
       }
     },
+    "/v1/bucket/objects": {
+      "get": {
+        "operationId": "BlueprintService_GetBucketObjects",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBucketObjectListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "BlueprintService"
+        ]
+      }
+    },
     "/v1/generate": {
       "post": {
         "operationId": "BlueprintService_GenerateProject",
@@ -168,6 +190,17 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1Blueprint"
+          }
+        }
+      }
+    },
+    "v1GetBucketObjectListResponse": {
+      "type": "object",
+      "properties": {
+        "objects": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }

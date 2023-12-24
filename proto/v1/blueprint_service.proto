@@ -10,6 +10,7 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "v1/rpc_generate_project.proto";
 import "v1/rpc_get_blueprints.proto";
+import "v1/rpc_get_bucket_objects.proto";
 import "v1/rpc_ping.proto";
 import "v1/empty.proto";
 
@@ -47,6 +48,12 @@ service BlueprintService {
   rpc GetBlueprints (GetBlueprintListRequest) returns (GetBlueprintListResponse) {
     option (google.api.http) = {
       get: "/v1/blueprints"
+    };
+  }
+
+  rpc GetBucketObjects (GetBucketObjectListRequest) returns (GetBucketObjectListResponse) {
+    option (google.api.http) = {
+      get: "/v1/bucket/objects"
     };
   }
 }

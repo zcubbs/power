@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb.v1;
+
+option go_package = "github.com/zcubbs/power";
+
+message GetBucketObjectListRequest {}
+
+message GetBucketObjectListResponse {
+  repeated string objects = 1;
+}
