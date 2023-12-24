@@ -19,55 +19,29 @@ import (
 	"io/fs"
 	"net"
 	"net/http"
+	"time"
 )
 
 type Server struct {
 	pb.UnimplementedBlueprintServiceServer
 
-	store       db.Store
-	minioClient *miniohelper.MinIOClient
-	cfg         config.Configuration
-	embedOpts   []EmbedAssetsOpts
+	store     db.Store
+	s3Client  *miniohelper.MinIOClient
+	cfg       config.Configuration
+	embedOpts []EmbedAssetsOpts
 }
 
 func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAssetsOpts) (*Server, error) {
-	minioClient, err := miniohelper.New(
-		cfg.S3.Endpoint,
-		cfg.S3.AccessKey,
-		cfg.S3.SecretKey,
-		cfg.S3.UseSSL,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create s3 client: %w", err)
+	s := &Server{
+		store:     store,
+		cfg:       cfg,
+		embedOpts: embedOpts,
 	}
 
-	// Ping to check if minio is running
-	err = minioClient.Ping()
-	if err != nil {
-		return nil, fmt.Errorf("failed to ping s3 client: %w", err)
-	}
+	// setup s3 client
+	setupS3Client(s, 10)
 
-	// Create bucket if not exists
-	ok, err := minioClient.BucketExists(cfg.S3.BucketName)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
-	}
-
-	if !ok {
-		err = minioClient.MakeBucket(cfg.S3.BucketName)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create bucket: %w", err)
-		}
-	}
-
-	log.Info("s3 client created")
-
-	return &Server{
-		store:       store,
-		minioClient: minioClient,
-		cfg:         cfg,
-		embedOpts:   embedOpts,
-	}, nil
+	return s, nil
 }
 
 func (s *Server) StartGrpcServer() {
@@ -184,4 +158,50 @@ func newFileServerHandler(opts EmbedAssetsOpts) http.Handler {
 	dir := http.FileServer(http.FS(sub))
 
 	return http.StripPrefix(opts.Path, dir)
+}
+
+func setupS3Client(s *Server, maxRetries int) {
+	retryCount := 0
+
+	for {
+		if retryCount >= maxRetries {
+			log.Fatal("maximum retries reached for setting up MinIO client, exiting")
+			return // Or handle this situation appropriately
+		}
+
+		var err error
+		s.s3Client, err = miniohelper.New(s.cfg.S3.Endpoint, s.cfg.S3.AccessKey, s.cfg.S3.SecretKey, s.cfg.S3.UseSSL)
+		if err != nil {
+			log.Error("failed to create MinIO client, retrying", "error", err, "retryCount", retryCount)
+			retryCount++
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		// Check if the bucket exists
+		bucketExists, err := s.s3Client.BucketExists(s.cfg.S3.BucketName)
+		if err != nil {
+			log.Error("failed to check if bucket exists, retrying", "error", err, "bucketName", s.cfg.S3.BucketName, "retryCount", retryCount)
+			retryCount++
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		if !bucketExists {
+			// Create the bucket if it does not exist
+			err = s.s3Client.MakeBucket(s.cfg.S3.BucketName)
+			if err != nil {
+				log.Error("failed to create bucket, retrying", "error", err, "bucketName", s.cfg.S3.BucketName, "retryCount", retryCount)
+				retryCount++
+				time.Sleep(5 * time.Second)
+				continue
+			}
+			log.Info("bucket created", "bucketName", s.cfg.S3.BucketName)
+		} else {
+			log.Info("bucket already exists", "bucketName", s.cfg.S3.BucketName)
+		}
+
+		log.Info("S3 client setup successful")
+		break
+	}
 }

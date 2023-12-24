@@ -8,7 +8,7 @@ import (
 
 func (s *Server) GetBucketObjects(_ context.Context, _ *pb.GetBucketObjectListRequest) (*pb.GetBucketObjectListResponse, error) {
 	// Get the list of objects in blueprints bucket
-	listChan := s.minioClient.ListObjects(s.cfg.S3.BucketName)
+	listChan := s.s3Client.ListObjects(s.cfg.S3.BucketName)
 
 	objects := make([]string, 0)
 	for object := range listChan {

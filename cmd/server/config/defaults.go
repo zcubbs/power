@@ -39,9 +39,6 @@ var (
 		"s3.secret_key":                   "storage_secret_key",
 		"s3.use_ssl":                      false,
 		"s3.bucket_name":                  "power",
-		"s3.download_host":                "localhost:8333",
-		"s3.download_scheme":              "http",
-		"s3.download_url_prefix":          "",
 	}
 
 	envKeys = map[string]string{
@@ -76,8 +73,5 @@ var (
 		"s3.secret_key":                   "S3_SECRET_KEY",
 		"s3.use_ssl":                      "S3_USE_SSL",
 		"s3.bucket_name":                  "S3_BUCKET_NAME",
-		"s3.download_host":                "S3_DOWNLOAD_HOST",
-		"s3.download_scheme":              "S3_DOWNLOAD_SCHEME",
-		"s3.download_url_prefix":          "S3_DOWNLOAD_URL_PREFIX",
 	}
 )

@@ -1,76 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "this.name" . }}
+  name: {{ include "this.name" . }}-storage
   labels:
-    {{- include "this.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "this.name" . }}-storage
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "this.name" . }}
+      app.kubernetes.io/name: {{ include "this.name" . }}-storage
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/storage-cm.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "this.name" . }}
+        app.kubernetes.io/name: {{ include "this.name" . }}-storage
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       restartPolicy: Always
       containers:
-        - name: {{ .Chart.Name }}-server
-          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-          ports:
-            {{- range .Values.server.services }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-          startupProbe:
-            httpGet:
-              port: 8333
-              path: /status
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          {{- if .Values.server.livenessProbe }}
-          livenessProbe:
-            {{- toYaml .Values.server.livenessProbe | nindent 12 }}
-          {{- end }}
-          {{- if .Values.server.readinessProbe }}
-          readinessProbe:
-            {{- toYaml .Values.server.readinessProbe | nindent 12 }}
-          {{- end }}
-          resources:
-            {{- toYaml .Values.server.resources | nindent 12 }}
-          env:
-            - name: S3_ENDPOINT
-              value: localhost:8333
-            {{- toYaml .Values.server.env | nindent 12 }}
-        - name: {{ .Chart.Name }}-web
-          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
-          imagePullPolicy: {{ .Values.web.image.pullPolicy }}
-          ports:
-            {{- range .Values.web.services }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-          {{- if .Values.web.livenessProbe }}
-          livenessProbe:
-            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
-          {{- end }}
-          {{- if .Values.web.readinessProbe }}
-          readinessProbe:
-            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
-          {{- end }}
-          resources:
-            {{- toYaml .Values.web.resources | nindent 12 }}
-          env:
-            {{- toYaml .Values.web.env | nindent 12 }}
         - name: {{ .Chart.Name }}-storage
           image: "{{ .Values.storage.image }}"
           imagePullPolicy: {{ .Values.storage.pullPolicy }}

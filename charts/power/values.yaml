@@ -168,4 +168,5 @@ storage:
   config:
     accessKey: "storage_access_key"
     secretKey: "storage_secret_key"
+    anonymousReadBucket: "power"
   volumeSizeLimitMB: 1024

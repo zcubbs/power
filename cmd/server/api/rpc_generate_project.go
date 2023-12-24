@@ -45,7 +45,7 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 
 	// Upload the generated project to MinIO
 	objectName := fmt.Sprintf("%s-%s.zip", req.Blueprint, time.Now().Format("20060102150405"))
-	_, err := s.minioClient.UploadFile(s.cfg.S3.BucketName, objectName, zipFilePath)
+	_, err := s.s3Client.UploadFile(s.cfg.S3.BucketName, objectName, zipFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upload project to MinIO: %v", err)
 	}
@@ -54,22 +54,9 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	filename := fmt.Sprintf("%s.zip", req.Blueprint)
 	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 
-	downloadUrl, err := s.minioClient.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 1*time.Hour, reqParams)
+	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 1*time.Hour, reqParams)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
-	}
-
-	// replace base url with the one from the config
-	downloadUrl.Host = s.cfg.S3.DownloadHost
-	downloadUrl.Scheme = s.cfg.S3.DownloadScheme
-
-	// check if prefix is set and start with / if not add it
-	if s.cfg.S3.DownloadUrlPrefix != "" {
-		if s.cfg.S3.DownloadUrlPrefix[0] != '/' {
-			s.cfg.S3.DownloadUrlPrefix = "/" + s.cfg.S3.DownloadUrlPrefix
-		}
-
-		downloadUrl.Path = s.cfg.S3.DownloadUrlPrefix + downloadUrl.Path
 	}
 
 	// Generate a download URL for the uploaded file
