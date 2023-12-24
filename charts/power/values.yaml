@@ -107,8 +107,8 @@ storage:
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: storage-s3
-      port: 8000
-      targetPort: 8000
+      port: 8333
+      targetPort: 8333
       protocol: TCP
   resources:
   # limits:
