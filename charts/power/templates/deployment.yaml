@@ -67,7 +67,6 @@ spec:
         - name: {{ .Chart.Name }}-storage
           image: "{{ .Values.storage.image }}"
           imagePullPolicy: {{ .Values.storage.pullPolicy }}
-          command: ["/bin/sh", "-c", "/usr/bin/weed"]
           args:
             - server
             - -s3
