@@ -53,20 +53,6 @@ server:
     # fsGroup: 2000
   # Configure environment variables for the container
   env: []
-  startupProbe:
-    exec:
-      command:
-        - sh
-        - -c
-        - |
-          response=$(curl -o /dev/null -s -w "%{http_code}\n" http://{{ .Chart.Name }}-storage:8333/)
-          if [ "$response" = "403" ]; then
-            exit 0
-          else
-            exit 1
-          fi
-    initialDelaySeconds: 10
-    periodSeconds: 5
   # Configure readiness and liveness probes for the container
   livenessProbe:
     httpGet:

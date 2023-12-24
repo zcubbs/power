@@ -29,10 +29,13 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
-          {{- if .Values.server.startupProbe }}
           startupProbe:
-            {{- toYaml .Values.server.startupProbe | nindent 12 }}
-          {{- end }}
+            httpGet:
+              port: 8333
+              path: /status
+              host: {{ .Chart.Name }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
           {{- if .Values.server.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.server.livenessProbe | nindent 12 }}
@@ -46,7 +49,7 @@ spec:
             {{- toYaml .Values.server.resources | nindent 12 }}
           env:
             - name: S3_ENDPOINT
-              value: {{ .Chart.Name }}-storage:8333
+              value: {{ .Chart.Name }}:8333
             {{- toYaml .Values.server.env | nindent 12 }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
