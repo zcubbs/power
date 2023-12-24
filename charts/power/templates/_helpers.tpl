@@ -47,3 +47,18 @@ Define the fullname template.
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Check if a map contains a key
+*/}}
+{{- define "this.containsKey" -}}
+{{- $map := index . 0 -}}
+{{- $key := index . 1 -}}
+{{- $found := false -}}
+{{- range $k, $v := $map -}}
+  {{- if eq $k $key -}}
+    {{- $found = true -}}
+  {{- end -}}
+{{- end -}}
+{{- $found -}}
+{{- end -}}
