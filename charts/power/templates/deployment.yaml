@@ -52,6 +52,7 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
+          command: ["/bin/sh", "-c", "/usr/bin/weed"]
           args:
             - server
             - -s3
