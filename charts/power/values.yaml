@@ -53,9 +53,33 @@ server:
     # fsGroup: 2000
   # Configure environment variables for the container
   env: []
+  startupProbe:
+    exec:
+      command:
+        - sh
+        - -c
+        - |
+          response=$(curl -o /dev/null -s -w "%{http_code}\n" http://{{ .Chart.Name }}-storage:8333/)
+          if [ "$response" = "403" ]; then
+            exit 0
+          else
+            exit 1
+          fi
+    initialDelaySeconds: 10
+    periodSeconds: 5
   # Configure readiness and liveness probes for the container
-  livenessProbe: {}
-  readinessProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /v1/ping
+      port: gateway
+      initialDelaySeconds: 15
+      periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /v1/ping
+      port: gateway
+      initialDelaySeconds: 5
+      periodSeconds: 10
   config: {}
 ###############################################################################
 web:
@@ -94,8 +118,12 @@ web:
   # Configure environment variables for the container
   env: []
   # Configure readiness and liveness probes for the container
-  livenessProbe: {}
-  readinessProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: web
+    initialDelaySeconds: 15
+    periodSeconds: 10
   config: {}
 ###############################################################################
 storage:
@@ -132,8 +160,16 @@ storage:
   # Configure environment variables for the container
   env: []
   # Configure readiness and liveness probes for the container
-  livenessProbe: {}
-  readinessProbe: {}
+  livenessProbe:
+    tcpSocket:
+      port: 8333
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readinessProbe:
+    tcpSocket:
+      port: 8333
+    initialDelaySeconds: 5
+    periodSeconds: 10
   config:
     accessKey: "storage_access_key"
     secretKey: "storage_secret_key"

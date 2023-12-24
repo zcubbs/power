@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BlueprintServiceClient interface {
+	Ping(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PingResponse, error)
 	GenerateProject(ctx context.Context, in *GenerateProjectRequest, opts ...grpc.CallOption) (*GenerateProjectResponse, error)
 	GetBlueprints(ctx context.Context, in *GetBlueprintListRequest, opts ...grpc.CallOption) (*GetBlueprintListResponse, error)
 }
@@ -32,6 +33,15 @@ type blueprintServiceClient struct {
 
 func NewBlueprintServiceClient(cc grpc.ClientConnInterface) BlueprintServiceClient {
 	return &blueprintServiceClient{cc}
+}
+
+func (c *blueprintServiceClient) Ping(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/pb.v1.BlueprintService/Ping", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *blueprintServiceClient) GenerateProject(ctx context.Context, in *GenerateProjectRequest, opts ...grpc.CallOption) (*GenerateProjectResponse, error) {
@@ -56,6 +66,7 @@ func (c *blueprintServiceClient) GetBlueprints(ctx context.Context, in *GetBluep
 // All implementations must embed UnimplementedBlueprintServiceServer
 // for forward compatibility
 type BlueprintServiceServer interface {
+	Ping(context.Context, *Empty) (*PingResponse, error)
 	GenerateProject(context.Context, *GenerateProjectRequest) (*GenerateProjectResponse, error)
 	GetBlueprints(context.Context, *GetBlueprintListRequest) (*GetBlueprintListResponse, error)
 	mustEmbedUnimplementedBlueprintServiceServer()
@@ -65,6 +76,9 @@ type BlueprintServiceServer interface {
 type UnimplementedBlueprintServiceServer struct {
 }
 
+func (UnimplementedBlueprintServiceServer) Ping(context.Context, *Empty) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
 func (UnimplementedBlueprintServiceServer) GenerateProject(context.Context, *GenerateProjectRequest) (*GenerateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateProject not implemented")
 }
@@ -82,6 +96,24 @@ type UnsafeBlueprintServiceServer interface {
 
 func RegisterBlueprintServiceServer(s grpc.ServiceRegistrar, srv BlueprintServiceServer) {
 	s.RegisterService(&BlueprintService_ServiceDesc, srv)
+}
+
+func _BlueprintService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlueprintServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.v1.BlueprintService/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlueprintServiceServer).Ping(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _BlueprintService_GenerateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -127,6 +159,10 @@ var BlueprintService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.v1.BlueprintService",
 	HandlerType: (*BlueprintServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _BlueprintService_Ping_Handler,
+		},
 		{
 			MethodName: "GenerateProject",
 			Handler:    _BlueprintService_GenerateProject_Handler,

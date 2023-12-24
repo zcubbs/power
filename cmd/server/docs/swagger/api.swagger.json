@@ -74,6 +74,30 @@
           "BlueprintService"
         ]
       }
+    },
+    "/v1/ping": {
+      "get": {
+        "summary": "Ping the server",
+        "description": "Ping the server",
+        "operationId": "BlueprintService_Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Ops"
+        ]
+      }
     }
   },
   "definitions": {
@@ -171,6 +195,23 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "v1PingResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "buildTime": {
+          "type": "string"
         }
       }
     },
