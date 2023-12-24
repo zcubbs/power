@@ -105,8 +105,8 @@ spec:
 
       volumes:
         - name: {{ .Chart.Name }}-storage-config
-          persistentVolumeClaim:
-            claimName: {{ .Chart.Name }}-storage-cm
+          configMap:
+            name: {{ .Chart.Name }}-storage-cm
 
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8}}
