@@ -129,7 +129,8 @@ jobs:
           yq e ".web.image.tag = \"$NEW_VERSION\"" charts/${{ env.CHART_NAME }}/values.yaml -i
           yq e ".appVersion = \"$NEW_VERSION\"" charts/${{ env.CHART_NAME }}/Chart.yaml -i
           git add charts/${{ env.CHART_NAME }}/values.yaml
-          git commit -m "Update image tag to $NEW_VERSION"
+          git add charts/${{ env.CHART_NAME }}/Chart.yaml
+          git commit -m "Update app/tag version to $NEW_VERSION"
           git push origin ${{ github.ref_name }}
 
   chart-release:

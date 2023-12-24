@@ -3,6 +3,12 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+imagePullSecrets: []
+
 ingressRoute: # This is the IngressRoute resource for Traefik
   enabled: false
   entryPoints:
@@ -10,7 +16,7 @@ ingressRoute: # This is the IngressRoute resource for Traefik
 server:
   image:
     repository: ghcr.io/zcubbs/power-server
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: "0.1.15"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
@@ -53,10 +59,11 @@ server:
   livenessProbe: {}
   readinessProbe: {}
   config: {}
+###############################################################################
 web:
   image:
     repository: ghcr.io/zcubbs/power-web
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: "0.1.15"
   services:
     - match: Host(`app.example.com`)
@@ -72,9 +79,6 @@ web:
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
   # Below are the placeholders for other configurations you may need.
   # Customize them according to your requirements.
   persistentVolume:
@@ -95,11 +99,44 @@ web:
   livenessProbe: {}
   readinessProbe: {}
   config: {}
-nodeSelector: {}
-tolerations: []
-affinity: {}
-imagePullSecrets: []
 ###############################################################################
-minio:
-  rootUser: minioadmin
-  rootPassword: minioadmin
+storage:
+  # tag: 3.59
+  image: chrislusf/seaweedfs@sha256:b0741dd5421ba253052aa2ee929fd34c4e9a45147eb2ce4e28916777a6f6b7ae
+  pullPolicy: IfNotPresent
+  services:
+    - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
+      name: storage-s3
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+  resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # Below are the placeholders for other configurations you may need.
+  # Customize them according to your requirements.
+  persistentVolume:
+    enabled: false
+    # accessModes:
+    #   - ReadWriteOnce
+    # size: 1Gi
+    # storageClass: ""
+    # existingClaim: ""
+  # Security context for the pod
+  securityContext:
+    enabled: false
+    # runAsUser: 1000
+    # fsGroup: 2000
+  # Configure environment variables for the container
+  env: [ ]
+  # Configure readiness and liveness probes for the container
+  livenessProbe: { }
+  readinessProbe: { }
+  config:
+    accessKey: "storage_access_key"
+    secretKey: "storage_secret_key"
+  volumeSizeLimitMB: 1024

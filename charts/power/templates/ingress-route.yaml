@@ -24,4 +24,12 @@ spec:
         - name: {{ .name }}
           port: {{ .port }}
     {{- end}}
+    {{- range .Values.storage.services }}
+    - match: {{ .match }}
+      kind: Rule
+      services:
+        - name: {{ .name }}
+          port: {{ .port }}
+    {{- end}}
+
 {{- end }}

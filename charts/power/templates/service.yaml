@@ -19,5 +19,11 @@ spec:
       targetPort: {{ .targetPort }}
       protocol: {{ .protocol }}
     {{- end}}
+    {{- range .Values.storage.services}}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+    {{- end}}
   selector:
     {{- include "this.selectorLabels" . | nindent 4 }}
