@@ -52,6 +52,11 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
+          args:
+            - server
+            - -s3
+            - -s3.config=/config.json
+            - -master.volumeSizeLimitMB={{ .Values.storage.volumeSizeLimitMB }}
           {{- if .Values.web.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.web.livenessProbe | nindent 12 }}
