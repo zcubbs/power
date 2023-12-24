@@ -60,7 +60,8 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	}
 
 	// replace base url with the one from the config
-	downloadUrl.Scheme = s.cfg.S3.DownloadBasePath
+	downloadUrl.Host = s.cfg.S3.DownloadHost
+	downloadUrl.Scheme = s.cfg.S3.DownloadScheme
 
 	// Generate a download URL for the uploaded file
 	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.S3.BucketName, "object", req.Blueprint)

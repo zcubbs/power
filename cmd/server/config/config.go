@@ -75,10 +75,11 @@ type PostgresConfig struct {
 }
 
 type S3Config struct {
-	Endpoint         string `mapstructure:"endpoint" json:"endpoint"`
-	AccessKey        string `mapstructure:"access_key" json:"access_key"`
-	SecretKey        string `mapstructure:"secret_key" json:"secret_key"`
-	UseSSL           bool   `mapstructure:"use_ssl" json:"use_ssl"`
-	BucketName       string `mapstructure:"bucket_name" json:"bucket_name"`
-	DownloadBasePath string `mapstructure:"download_base_path" json:"download_base_path"`
+	Endpoint       string `mapstructure:"endpoint" json:"endpoint"`
+	AccessKey      string `mapstructure:"access_key" json:"access_key"`
+	SecretKey      string `mapstructure:"secret_key" json:"secret_key"`
+	UseSSL         bool   `mapstructure:"use_ssl" json:"use_ssl"`
+	BucketName     string `mapstructure:"bucket_name" json:"bucket_name"`
+	DownloadHost   string `mapstructure:"download_base_path" json:"download_base_path"`
+	DownloadScheme string `mapstructure:"download_scheme" json:"download_scheme"`
 }
