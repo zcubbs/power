@@ -58,14 +58,14 @@ server:
     httpGet:
       path: /v1/ping
       port: gateway
-      initialDelaySeconds: 15
-      periodSeconds: 10
+    initialDelaySeconds: 15
+    periodSeconds: 10
   readinessProbe:
     httpGet:
       path: /v1/ping
       port: gateway
-      initialDelaySeconds: 5
-      periodSeconds: 10
+    initialDelaySeconds: 5
+    periodSeconds: 10
   config: {}
 ###############################################################################
 web:
@@ -102,7 +102,7 @@ web:
     # runAsUser: 1000
     # fsGroup: 2000
   # Configure environment variables for the container
-  env: []
+#  env: []
   # Configure readiness and liveness probes for the container
   livenessProbe:
     httpGet:
