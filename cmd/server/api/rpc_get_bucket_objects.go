@@ -15,7 +15,7 @@ func (s *Server) GetBucketObjects(_ context.Context, _ *pb.GetBucketObjectListRe
 		if object.Err != nil {
 			return nil, fmt.Errorf("failed to list objects: %v", object.Err)
 		}
-		objects = append(objects, fmt.Sprintf("%s", object.Key))
+		objects = append(objects, object.Key)
 	}
 
 	return &pb.GetBucketObjectListResponse{Objects: objects}, nil
