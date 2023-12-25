@@ -15,7 +15,7 @@ server:
   image:
     repository: ghcr.io/zcubbs/power-server
     pullPolicy: IfNotPresent
-    tag: "0.1.22"
+    tag: "0.1.24"
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
       name: gateway
@@ -73,7 +73,7 @@ web:
   image:
     repository: ghcr.io/zcubbs/power-web
     pullPolicy: IfNotPresent
-    tag: "0.1.22"
+    tag: "0.1.24"
   services:
     - match: Host(`app.example.com`)
       name: web
