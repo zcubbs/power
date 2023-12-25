@@ -54,7 +54,7 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	filename := fmt.Sprintf("%s.zip", req.Blueprint)
 	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 
-	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 1*time.Hour, reqParams)
+	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 2*time.Hour, reqParams)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
 	}
