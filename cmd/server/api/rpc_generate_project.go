@@ -51,16 +51,16 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 	}
 
 	reqParams := make(url.Values)
-	filename := fmt.Sprintf("%s.zip", req.Blueprint)
+	filename := fmt.Sprintf("%s.zip", objectName)
 	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 
-	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, req.Blueprint, 2*time.Hour, reqParams)
+	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, objectName, 10*time.Minute, reqParams)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
 	}
 
 	// Generate a download URL for the uploaded file
-	log.Debug("Uploaded project to MinIO", "bucket", s.cfg.S3.BucketName, "object", req.Blueprint)
+	log.Debug("Uploaded project to S3", "bucket", s.cfg.S3.BucketName, "object", objectName)
 	log.Debug("Generated download URL", "url", downloadUrl)
 
 	// clean up temp dir
