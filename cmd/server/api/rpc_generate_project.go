@@ -7,7 +7,6 @@ import (
 	"github.com/zcubbs/power/pkg/blueprint"
 	"github.com/zcubbs/power/pkg/designer"
 	pb "github.com/zcubbs/power/proto/gen/v1"
-	"net/url"
 	"os"
 	"path/filepath"
 	"time"
@@ -50,11 +49,7 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 		return nil, fmt.Errorf("failed to upload project to MinIO: %v", err)
 	}
 
-	reqParams := make(url.Values)
-	filename := fmt.Sprintf("%s.zip", objectName)
-	reqParams.Set("response-content-disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
-
-	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, objectName, 10*time.Minute, reqParams)
+	downloadUrl, err := s.s3Client.GetDownloadURL(s.cfg.S3.BucketName, objectName, 10*time.Minute, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get download url: %v", err)
 	}
