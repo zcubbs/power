@@ -2,7 +2,7 @@ import React from 'react';
 import {Blueprint} from '../types';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import BlueprintCustomizationDialog from "@/components/BlueprintCustomizationDialog.tsx";
-import {generateProject} from "@/api.ts";
+import {generateBlueprint} from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
 
 interface BlueprintTileProps {
@@ -12,16 +12,16 @@ interface BlueprintTileProps {
 const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
   const { toast } = useToast();
 
-  const handleGenerate = async (options: Record<string, string>) => {
+  const handleGenerate = async (values: Record<string, string>) => {
     if (!blueprint) return;
     // ensure options are all strings
-    Object.keys(options).forEach(key => {
-      options[key] = options[key].toString();
+    Object.keys(values).forEach(key => {
+      values[key] = values[key].toString();
     });
 
     // trigger download using a link
     const link = document.createElement('a');
-    link.href = await generateProject(blueprint.spec.id, options);
+    link.href = await generateBlueprint(blueprint.spec.id, values);
     link.setAttribute('download', `${blueprint.spec.name}.zip`);
     document.body.appendChild(link);
     link.click();

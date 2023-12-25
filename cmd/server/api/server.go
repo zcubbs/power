@@ -165,14 +165,14 @@ func setupS3Client(s *Server, maxRetries int) {
 
 	for {
 		if retryCount >= maxRetries {
-			log.Fatal("maximum retries reached for setting up MinIO client, exiting")
+			log.Fatal("maximum retries reached for setting up S3 client, exiting")
 			return // Or handle this situation appropriately
 		}
 
 		var err error
 		s.s3Client, err = miniohelper.New(s.cfg.S3.Endpoint, s.cfg.S3.AccessKey, s.cfg.S3.SecretKey, s.cfg.S3.UseSSL)
 		if err != nil {
-			log.Error("failed to create MinIO client, retrying", "error", err, "retryCount", retryCount)
+			log.Error("failed to create S3 client, retrying", "error", err, "retryCount", retryCount)
 			retryCount++
 			time.Sleep(5 * time.Second)
 			continue

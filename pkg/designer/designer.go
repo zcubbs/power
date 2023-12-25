@@ -1,72 +1,137 @@
 package designer
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/charmbracelet/log"
 	"github.com/zcubbs/power/pkg/blueprint"
 	"github.com/zcubbs/power/pkg/blueprint/go/apiserver"
+	"github.com/zcubbs/power/pkg/zip"
+	"os"
+	"path"
+	"time"
 )
 
-// ProjectSpec represents the overall project specification.
-type ProjectSpec struct {
-	Components []blueprint.ComponentSpec `json:"components"`
-}
+// PostGenHook is a function that is called after a project is generated.
+type PostGenHook func(archivePath string) error
 
-// ParseSpec parses the JSON input into ProjectSpec struct.
-func ParseSpec(jsonInput string) (*ProjectSpec, error) {
-	var spec ProjectSpec
-	err := json.Unmarshal([]byte(jsonInput), &spec)
-	return &spec, err
-}
+// Generate iterates over components and generates each part.
+func Generate(blueprintId string, values map[string]string, postGenHook PostGenHook) error {
+	// get blueprint spec
+	spec, err := blueprint.GetBlueprintSpec(blueprintId)
+	if err != nil {
+		return fmt.Errorf("error getting blueprint spec: %v", err)
+	}
 
-// GenerateProject iterates over components and generates each part.
-func GenerateProject(spec *ProjectSpec, outputPath string) error {
-	for _, component := range spec.Components {
-		generator, specExists := blueprint.GetGenerator(component.Type)
-		if !specExists {
-			return fmt.Errorf("no generator found for type: %s", component.Type)
-		}
+	timestamp := time.Now().Format("20060102150405")
 
-		// Retrieve the blueprint spec and validate the component config
-		blueprintSpec, err := blueprint.GetBlueprintSpec(component.Type)
+	// directory & archive paths
+	tmpDir := path.Join(os.TempDir(), "power", blueprintId, timestamp)
+	workdir := path.Join(tmpDir, "workdir")
+
+	// create tmp dir
+	if err := os.MkdirAll(workdir, 0750); err != nil {
+		return fmt.Errorf("error creating tmp dir: %v", err)
+	}
+	defer func(path string) {
+		err := os.RemoveAll(path)
 		if err != nil {
-			return fmt.Errorf("error retrieving spec for '%s': %v", component.Type, err)
+			log.Error("Failed to remove temp dir",
+				"package", "designer",
+				"function", "Generate",
+				"path", path,
+				"error", err)
 		}
+	}(tmpDir)
 
-		if err := validateComponentConfig(component, *blueprintSpec); err != nil {
-			return fmt.Errorf("validation error for '%s': %v", component.Type, err)
-		}
+	// load generator
+	generator, specExists := blueprint.GetGenerator(blueprintId)
+	if !specExists {
+		return fmt.Errorf("no generator found for type: %s", spec.ID)
+	}
 
-		if err := generator.Generate(component, outputPath); err != nil {
-			return fmt.Errorf("error generating component '%s': %v", component.Type, err)
+	// validate spec config & values
+	if err := validateSpecConfig(*spec, values); err != nil {
+		return fmt.Errorf("validation error for '%s': %v", spec.ID, err)
+	}
+
+	// generate dir & file structure for blueprint & values
+	if err := generator.Generate(*spec, values, workdir); err != nil {
+		return fmt.Errorf("error generating component '%s': %v", spec.ID, err)
+	}
+
+	// create archive
+	archivePath, err := createArchive(fmt.Sprintf("%s-%s", spec.ID, timestamp), "zip", tmpDir, workdir)
+	if err != nil {
+		return fmt.Errorf("error creating archive: %v", err)
+	}
+
+	// call post gen hook
+	if postGenHook != nil {
+		if err := postGenHook(archivePath); err != nil {
+			return fmt.Errorf("error executing post gen hook: %v", err)
 		}
 	}
 
 	return nil
 }
 
+// createArchive creates an archive of the generated project.
+func createArchive(archiveName, format, tmpDir, workdir string) (string, error) {
+	archivePath := path.Join(tmpDir, fmt.Sprintf("%s.%s", archiveName, format))
+	if err := zip.Directory(workdir, archivePath); err != nil {
+		return "", fmt.Errorf("error creating archive: %v", err)
+	}
+	return archivePath, nil
+}
+
 // validateComponentConfig checks if the provided component configuration
 // aligns with the blueprint spec.
-func validateComponentConfig(component blueprint.ComponentSpec, spec blueprint.Spec) error {
+func validateSpecConfig(spec blueprint.Spec, values map[string]string) error {
+	// validate options
 	for _, option := range spec.Options {
-		value, ok := component.Config[option.Name]
-		if !ok {
-			return fmt.Errorf("required option '%s' not provided for '%s'", option.Name, component.Type)
+		if err := validateOption(option); err != nil {
+			return err
 		}
 
-		if option.Type == "select" {
-			validChoice := false
-			for _, choice := range option.Choices {
-				if value == choice {
-					validChoice = true
-					break
-				}
-			}
-			if !validChoice {
-				return fmt.Errorf("invalid choice for '%s': %v, must be one of %v", option.Name, value, option.Choices)
-			}
+		if err := validateOptionValue(option, values); err != nil {
+			return err
 		}
 	}
+
+	return nil
+}
+
+// validateOption checks if the provided option aligns with the blueprint spec.
+func validateOption(option blueprint.Option) error {
+	if err := validateOptionType(option); err != nil {
+		return err
+	}
+
+	if err := validateOptionChoices(option); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateOptionValue checks if the provided option value aligns with the blueprint spec.
+func validateOptionValue(option blueprint.Option, values map[string]string) error {
+	// todo: implement this
+
+	return nil
+}
+
+// validateOptionType checks if the provided option type aligns with the blueprint spec.
+func validateOptionType(option blueprint.Option) error {
+	// todo: implement this
+
+	return nil
+}
+
+// validateOptionChoices checks if the provided option choices aligns with the blueprint spec.
+func validateOptionChoices(option blueprint.Option) error {
+	// todo: implement this
+
 	return nil
 }
 

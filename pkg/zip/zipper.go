@@ -2,6 +2,7 @@ package zip
 
 import (
 	"archive/zip"
+	"fmt"
 	"github.com/charmbracelet/log"
 	"io"
 	"os"
@@ -22,7 +23,7 @@ func Directory(srcDir, destZip string) error {
 			log.Error("Failed to close zip file",
 				"package", "zip",
 				"function", "Directory",
-				"error", err,
+				"error", err.Error(),
 				"path", destZip,
 			)
 		}
@@ -35,7 +36,7 @@ func Directory(srcDir, destZip string) error {
 			log.Error("Failed to close zip writer",
 				"package", "zip",
 				"function", "Directory",
-				"error", err,
+				"error", err.Error(),
 				"path", destZip,
 			)
 		}
@@ -45,33 +46,36 @@ func Directory(srcDir, destZip string) error {
 		if err != nil {
 			return err
 		}
-		if info.IsDir() {
-			return nil // Skip directories
+		if info.IsDir() || filepath.Ext(filePath) == ".zip" {
+			return nil // Skip directories and zip files
 		}
 
 		relPath, err := filepath.Rel(srcDir, filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to get relative path: %w", err)
 		}
 
 		zipFileWriter, err := zipWriter.Create(relPath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create zip file writer: %w", err)
 		}
 
 		// sanitize paths
 		filePath = filepath.Join(filepath.Clean(filePath))
 		file, err := os.Open(filePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to open file: %w", err)
 		}
 		defer func(file *os.File) {
-			log.Error("Failed to close file",
-				"package", "zip",
-				"function", "Directory",
-				"error", file.Close(),
-				"path", filePath,
-			)
+			err := file.Close()
+			if err != nil {
+				log.Error("Failed to close file",
+					"package", "zip",
+					"function", "Directory",
+					"error", err,
+					"path", filePath,
+				)
+			}
 		}(file)
 
 		_, err = io.Copy(zipFileWriter, file)

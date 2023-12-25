@@ -162,15 +162,15 @@
     "v1GenerateProjectRequest": {
       "type": "object",
       "properties": {
-        "blueprint": {
+        "blueprintId": {
           "type": "string"
         },
-        "options": {
+        "values": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           },
-          "title": "map of options"
+          "title": "map of option custom values"
         }
       }
     },

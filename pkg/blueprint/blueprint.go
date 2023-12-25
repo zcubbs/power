@@ -8,15 +8,9 @@ import (
 	"sync"
 )
 
-// ComponentSpec is a generic specification for any project component.
-type ComponentSpec struct {
-	Type   string                 `json:"type"`
-	Config map[string]interface{} `json:"config"`
-}
-
-// ComponentGenerator defines the interface for a blueprint.
-type ComponentGenerator interface {
-	Generate(spec ComponentSpec, outputPath string) error
+// Generator defines the interface for a blueprint.
+type Generator interface {
+	Generate(spec Spec, values map[string]string, workdir string) error
 }
 
 // Spec BlueprintSpec represents the structure of a YAML blueprint spec.
@@ -48,58 +42,46 @@ func (b *Option) String() string {
 var Generators sync.Map
 
 // blueprintSpecs holds the specs for each registered blueprint.
-var blueprintSpecs sync.Map
+var blueprints sync.Map
 
-// RegisterGenerator adds a new generator to the system.
-func RegisterGenerator(name string, generator ComponentGenerator) error {
-	if _, loaded := Generators.LoadOrStore(name, generator); loaded {
-		return fmt.Errorf("generator already registered: %s", name)
+type Blueprint struct {
+	Spec      *Spec
+	Generator Generator
+}
+
+// Register registers the spec for a given blueprint type.
+func Register(blueprint Blueprint) error {
+	if blueprint.Spec.ID == "" {
+		return fmt.Errorf("failed to register blueprint spec: missing id")
 	}
+	blueprints.Store(blueprint.Spec.ID, blueprint.Spec)
+	Generators.Store(blueprint.Spec.ID, blueprint.Generator)
+
 	return nil
 }
 
-// RegisterBlueprintSpec registers the spec for a given blueprint type.
-func RegisterBlueprintSpec(blueprintType string, spec *Spec) {
-	blueprintSpecs.Store(blueprintType, spec)
-}
-
 // GetGenerator retrieves a generator from the registry.
-func GetGenerator(name string) (ComponentGenerator, bool) {
-	generator, ok := Generators.Load(name)
+func GetGenerator(id string) (Generator, bool) {
+	generator, ok := Generators.Load(id)
 	if !ok {
 		return nil, false
 	}
-	return generator.(ComponentGenerator), true
+	return generator.(Generator), true
 }
 
 // GetBlueprintSpec retrieves the spec for a given blueprint type.
-func GetBlueprintSpec(blueprintType string) (*Spec, error) {
-	spec, ok := blueprintSpecs.Load(blueprintType)
+func GetBlueprintSpec(id string) (*Spec, error) {
+	spec, ok := blueprints.Load(id)
 	if !ok {
-		return nil, fmt.Errorf("no spec found for blueprint type: %s", blueprintType)
+		return nil, fmt.Errorf("no spec found for blueprint id: %s", id)
 	}
 
 	blueprintSpec, ok := spec.(*Spec)
 	if !ok {
-		return nil, fmt.Errorf("invalid spec type for blueprint type: %s", blueprintType)
+		return nil, fmt.Errorf("invalid spec type for blueprint id: %s", id)
 	}
 
 	return blueprintSpec, nil
-}
-
-// GenerateComponent calls the appropriate generator based on the component type.
-func GenerateComponent(spec ComponentSpec, outputPath string) error {
-	value, ok := Generators.Load(spec.Type)
-	if !ok {
-		return fmt.Errorf("no generator found for type: %s", spec.Type)
-	}
-
-	generator, ok := value.(ComponentGenerator)
-	if !ok {
-		return fmt.Errorf("invalid generator for type: %s", spec.Type)
-	}
-
-	return generator.Generate(spec, outputPath)
 }
 
 // LoadBlueprintSpec reads and parses the YAML spec file for a blueprint.
@@ -126,7 +108,7 @@ func LoadBlueprintSpecFromBytes(data []byte) (*Spec, error) {
 // GetAllBlueprintSpecs returns a map of all registered blueprint specs.
 func GetAllBlueprintSpecs() map[string]*Spec {
 	specs := make(map[string]*Spec)
-	blueprintSpecs.Range(func(key, value interface{}) bool {
+	blueprints.Range(func(key, value interface{}) bool {
 		specs[key.(string)] = value.(*Spec)
 		return true
 	})

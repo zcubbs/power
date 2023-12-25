@@ -1,54 +1,47 @@
 package blueprint
 
 import (
-	"log"
+	"fmt"
 	"path/filepath"
 	"plugin"
 )
 
-func LoadPlugins(pluginDir string) {
+func LoadPlugins(pluginDir string) error {
 	files, err := filepath.Glob(filepath.Join(pluginDir, "*.so"))
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to list plugins: %v", err)
 	}
 
 	for _, file := range files {
 		p, err := plugin.Open(file)
 		if err != nil {
-			log.Println("Failed to load plugin:", err)
-			continue
+			return fmt.Errorf("failed to open plugin: %v", err)
 		}
 
 		symbol, err := p.Lookup("Plugin")
 		if err != nil {
-			log.Println("Failed to find 'Plugin' symbol:", err)
-			continue
+			return fmt.Errorf("failed to lookup symbol Plugin: %v", err)
 		}
 
-		bp, ok := symbol.(ComponentGenerator)
+		bp, ok := symbol.(Generator)
 		if !ok {
-			log.Println("Invalid plugin type:", file)
-			continue
+			return fmt.Errorf("invalid plugin type. expected Generator, got %T", symbol)
 		}
 
-		blueprintName := extractBlueprintName(file)
-		err = RegisterGenerator(blueprintName, bp)
-		if err != nil {
-			log.Println("Failed to register plugin:", err)
-			continue
-		}
-
-		specFilePath := filepath.Join(pluginDir, blueprintName+"-spec.yaml")
+		specFilePath := filepath.Join(pluginDir, "spec.yaml")
 		spec, err := LoadBlueprintSpec(specFilePath)
 		if err != nil {
-			log.Println("Failed to load spec for plugin:", err)
-			continue
+			return fmt.Errorf("failed to load spec for plugin. make sure spec.yaml exists in the plugin directory: %v", err)
 		}
-		RegisterBlueprintSpec(blueprintName, spec)
-	}
-}
 
-func extractBlueprintName(pluginFilePath string) string {
-	// Implement logic to extract the blueprint name
-	return filepath.Base(pluginFilePath)
+		err = Register(Blueprint{
+			Spec:      spec,
+			Generator: bp,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to register plugin: %v", err)
+		}
+	}
+
+	return nil
 }

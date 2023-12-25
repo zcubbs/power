@@ -7,9 +7,8 @@ package pb.v1;
 option go_package = "github.com/zcubbs/power";
 
 message GenerateProjectRequest {
-  string blueprint = 1;
-  // map of options
-  map<string, string> options = 2;
+  string blueprintId = 1;
+  map<string, string> values = 2; // map of option custom values
 }
 
 message GenerateProjectResponse {
