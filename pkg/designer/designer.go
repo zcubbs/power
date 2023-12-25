@@ -8,6 +8,7 @@ import (
 	"github.com/zcubbs/power/pkg/zip"
 	"os"
 	"path"
+	"strconv"
 	"time"
 )
 
@@ -116,21 +117,91 @@ func validateOption(option blueprint.Option) error {
 
 // validateOptionValue checks if the provided option value aligns with the blueprint spec.
 func validateOptionValue(option blueprint.Option, values map[string]string) error {
-	// todo: implement this
+	value, ok := values[option.ID]
+	if !ok {
+		return fmt.Errorf("value for option '%s' is missing", option.Name)
+	}
+
+	switch option.Type {
+	case "text":
+		return validateTextOption(option, value)
+	case "number":
+		return validateNumberOption(option, value)
+	case "boolean":
+		return validateBooleanOption(option, value)
+	case "select":
+		return validateSelectOption(option, value)
+	}
 
 	return nil
 }
 
+func validateTextOption(option blueprint.Option, value string) error {
+	if value == "" {
+		return fmt.Errorf("empty value for text option '%s'", option.Name)
+	}
+	return nil
+}
+
+func validateNumberOption(option blueprint.Option, value string) error {
+	if _, err := strconv.ParseFloat(value, 64); err != nil {
+		return fmt.Errorf("invalid number '%s' for option '%s'", value, option.Name)
+	}
+	return nil
+}
+
+func validateBooleanOption(option blueprint.Option, value string) error {
+	if value != "true" && value != "false" {
+		return fmt.Errorf("invalid boolean '%s' for option '%s'", value, option.Name)
+	}
+	return nil
+}
+
+func validateSelectOption(option blueprint.Option, value string) error {
+	for _, choice := range option.Choices {
+		if value == choice {
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid choice '%s' for select option '%s'", value, option.Name)
+}
+
 // validateOptionType checks if the provided option type aligns with the blueprint spec.
 func validateOptionType(option blueprint.Option) error {
-	// todo: implement this
+	allowedTypes := map[string]bool{
+		"boolean": true,
+		"text":    true,
+		"select":  true,
+		"number":  true,
+	}
+
+	if _, ok := allowedTypes[option.Type]; !ok {
+		return fmt.Errorf("invalid type '%s' for option '%s'", option.Type, option.Name)
+	}
 
 	return nil
 }
 
 // validateOptionChoices checks if the provided option choices aligns with the blueprint spec.
 func validateOptionChoices(option blueprint.Option) error {
-	// todo: implement this
+	// This validation is relevant only for options of type 'select'
+	if option.Type != "select" {
+		return nil
+	}
+
+	// Check if there are choices provided for the select type
+	if len(option.Choices) == 0 {
+		return fmt.Errorf("no choices provided for select option '%s'", option.Name)
+	}
+
+	// check for duplicate choices or any other specific rules
+	choiceSet := make(map[string]bool)
+	for _, choice := range option.Choices {
+		if _, exists := choiceSet[choice]; exists {
+			return fmt.Errorf("duplicate choice '%s' found in option '%s'", choice, option.Name)
+		}
+		choiceSet[choice] = true
+	}
 
 	return nil
 }

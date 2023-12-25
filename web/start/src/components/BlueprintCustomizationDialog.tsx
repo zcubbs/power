@@ -1,113 +1,108 @@
-import React, {useEffect, useState} from 'react';
-import {Blueprint, Option} from '../types';
-import {Switch} from "@/components/ui/switch.tsx";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle, DialogTrigger
-} from "@/components/ui/dialog.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Separator} from "@/components/ui/separator.tsx";
-import {Combobox} from "@/components/ui/combobox.tsx";
-import {Input} from "@/components/ui/input.tsx";
+import React, { useEffect, useState } from 'react';
+import { Blueprint, Option } from '../types';
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Combobox } from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
 
 interface BlueprintCustomizationDialogProps {
   blueprint: Blueprint | null;
-  onGenerate: (options: Record<string, any>) => void;
+  onGenerate: (options: Record<string, string>) => void;
 }
 
-const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> = ({blueprint, onGenerate}) => {
-  const [options, setOptions] = useState<Record<string, any>>({});
-  const [open, setOpen] = useState(false);
+const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> = ({ blueprint, onGenerate }) => {
+  const [options, setOptions] = useState<Record<string, string>>({});
+  const [nameToIdMap, setNameToIdMap] = useState<Record<string, string>>({});
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // Initialize options with defaults
     if (blueprint) {
-      const initialOptions = blueprint.spec.options.reduce((acc: Record<string, any>, option: Option) => {
-        acc[option.name] = option.default || '';
-        return acc;
-      }, {});
+      const initialOptions: Record<string, string> = {};
+      const newNameToIdMap: Record<string, string> = {};
+      blueprint.spec.options.forEach((option: Option) => {
+        initialOptions[option.id] = option.default || '';
+        newNameToIdMap[option.name] = option.id;
+      });
       setOptions(initialOptions);
+      setNameToIdMap(newNameToIdMap);
     }
   }, [blueprint]);
 
-  const handleOptionChange = (name: string, value: any) => {
-    setOptions({...options, [name]: value});
+  const handleOptionChange = (name: string, value: string) => {
+    const optionId = nameToIdMap[name];
+    setOptions(prevOptions => ({ ...prevOptions, [optionId]: value }));
   };
 
-  const handleGenerate = async (options: Record<string, string>) => {
+  const handleGenerate = () => {
     setOpen(false);
     onGenerate(options);
-  }
-
-  if (!blueprint) return null;
+  };
 
   const renderInputField = (option: Option) => {
+    const handleComboboxChange = (selectedValue: string) => {
+      handleOptionChange(option.name, selectedValue);
+    };
+
     switch (option.type) {
       case 'text':
-        return <Input type="text" value={options[option.name]}
-                      onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
       case 'number':
-        return <Input type="number" value={options[option.name]}
-                      onChange={(e) => handleOptionChange(option.name, e.target.value)}/>;
+        return (
+          <Input
+            type={option.type}
+            value={options[option.id] || ''}
+            onChange={(e) => handleOptionChange(option.name, e.target.value)}
+          />
+        );
       case 'select':
         return (
-          <Combobox defaultValue={option.default ?? options[option.name]}
-                    placeholder="Select an option"
-                    options={option.options ?? []}
-                    onChange={() => handleOptionChange(option.name, !options[option.name])}
-          >
-          </Combobox>
+          <Combobox
+            defaultValue={option.default}
+            placeholder="Select an option"
+            options={option.choices || []} // Ensure this array is populated
+            onChange={handleComboboxChange}
+          />
         );
       case 'boolean':
         return (
-          <div className="flex items-center space-x-2">
-            <Switch id="airplane-mode"
-                    checked={options[option.name]}
-                    onCheckedChange={() => handleOptionChange(option.name, !options[option.name])}
-            />
-          </div>
+          <Switch
+            id={`switch-${option.id}`}
+            checked={options[option.id] === 'true'}
+            onCheckedChange={(isChecked) => handleOptionChange(option.name, isChecked ? 'true' : 'false')}
+          />
         );
       default:
         return null;
     }
   };
 
+  if (!blueprint) {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Use</Button>
       </DialogTrigger>
-      <DialogContent className="w-[800px] max-w-full">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
-            Blueprint: {blueprint.spec.name}
-          </DialogTitle>
-          <DialogDescription>
-            {blueprint.spec.description}
-          </DialogDescription>
+          <DialogTitle>Blueprint: {blueprint.spec.name}</DialogTitle>
+          <DialogDescription>{blueprint.spec.description}</DialogDescription>
         </DialogHeader>
-        <Separator className="my-4"/>
-        {/* grid with 2 columns and a row per loop iteration */}
-        {blueprint.spec.options.map((option) => (
-          <div key={option.name} className="grid grid-cols-2 gap-4">
-            <div className="text-sm font-bold">{option.name}</div>
+        <Separator />
+        {blueprint.spec.options.map((option: Option) => (
+          <div key={option.id} className="grid grid-cols-2 gap-4">
+            <div>{option.name}</div>
             <div>{renderInputField(option)}</div>
           </div>
         ))}
-        <Separator className="my-4"/>
-        <DialogFooter className="sm:justify-start">
-          <Button className="btn btn-primary" onClick={() => handleGenerate(options)}>
-            Generate
-          </Button>
+        <Separator />
+        <DialogFooter>
+          <Button onClick={handleGenerate}>Generate</Button>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
+            <Button variant="secondary">Close</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -15,5 +15,5 @@ export interface Option {
   description: string;
   type: string;
   default: string;
-  options?: string[];
+  choices?: string[];
 }

@@ -61,7 +61,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
                 key={option}
                 value={option}
                 onSelect={(currentValue) => {
-                  onSelectedValueChange(currentValue)
+                  onSelectedValueChange(currentValue);
                 }}
               >
                 {option}

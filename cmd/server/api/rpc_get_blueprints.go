@@ -26,7 +26,7 @@ func toSpecPb(spec *blueprint.Spec) *pb.Spec {
 			Name:        option.Name,
 			Type:        option.Type,
 			Description: option.Description,
-			Options:     option.Choices,
+			Choices:     option.Choices,
 			Default:     option.Default,
 		})
 	}
