@@ -6,8 +6,10 @@ import (
 	"github.com/zcubbs/power/cmd/server/api"
 	"github.com/zcubbs/power/cmd/server/config"
 	"github.com/zcubbs/power/cmd/server/docs"
+	"github.com/zcubbs/power/cmd/utils"
 	"github.com/zcubbs/power/pkg/blueprint"
 	"github.com/zcubbs/power/pkg/designer"
+	"os"
 )
 
 var (
@@ -39,6 +41,13 @@ func init() {
 		log.SetLevel(log.DebugLevel)
 		config.PrintConfiguration(*cfg)
 	}
+
+	// Set the timezone
+	err = os.Setenv("TZ", cfg.HttpServer.TZ)
+	if err != nil {
+		log.Error("failed to set timezone", "error", err)
+	}
+	utils.CheckTimeZone()
 
 	log.Info("loaded configuration")
 }

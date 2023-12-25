@@ -13,7 +13,7 @@ var (
 		"http_server.port":                HttpPort,
 		"http_server.allow_origins":       "http://localhost:3000",
 		"http_server.allow_headers":       "Origin, Content-Type, Accept",
-		"http_server.tz":                  "UTC",
+		"http_server.tz":                  "europe/paris",
 		"http_server.enable_print_routes": false,
 		"http_server.read_header_timeout": "3s",
 		"grpc_server.port":                GrpcPort,
