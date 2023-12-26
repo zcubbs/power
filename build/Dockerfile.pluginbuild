@@ -16,4 +16,4 @@ COPY pkg/ pkg/
 COPY ${SOURCE_DIR} .
 
 # Build the plugin
-RUN go build -buildmode=plugin -o plugin.so .
+RUN go build -buildmode=plugin -o plugins/bin/plugin.so .

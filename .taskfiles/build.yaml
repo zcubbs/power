@@ -55,7 +55,7 @@ tasks:
   plugins:go:apiserver:linux:
     desc: Build Plugins for Linux
     cmds:
-      - cmd: go build -buildmode=plugin -o plugins/go/apiserver/plugin.so ./plugins/go/apiserver/
+      - cmd: go build -buildmode=plugin -o plugins/bin/apiserver.so ./plugins/go/apiserver/
         dir: .
         env:
           GOOS: linux

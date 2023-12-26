@@ -2,4 +2,4 @@ debug: true
 
 blueprint:
   enable_plugins: true
-  plugin_dir: plugins/go/apiserver
+  plugin_dir: plugins/bin
