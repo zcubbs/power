@@ -60,7 +60,7 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
           <Combobox
             defaultValue={option.default}
             placeholder="Select an option"
-            options={option.choices || []} // Ensure this array is populated
+            options={option.choices ?? []} // Ensure this array is populated
             onChange={handleComboboxChange}
           />
         );

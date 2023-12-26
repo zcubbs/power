@@ -60,8 +60,8 @@ export const Combobox: React.FC<ComboboxProps> = ({
               <CommandItem
                 key={option}
                 value={option}
-                onSelect={(currentValue) => {
-                  onSelectedValueChange(currentValue);
+                onSelect={(_) => {
+                  onSelectedValueChange(option);
                 }}
               >
                 {option}
