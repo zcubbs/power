@@ -69,9 +69,22 @@ func main() {
 	// TODO: implement dbUtil.InitAdminUser(store, cfg)
 
 	// Register Builtin Blueprints
-	err := designer.EnableBuiltinGenerators()
-	if err != nil {
-		log.Fatal("failed to register builtin blueprints", "error", err)
+	if cfg.Blueprint.EnableBuiltins {
+		err := designer.EnableBuiltinGenerators()
+		if err != nil {
+			log.Fatal("failed to register builtin blueprints", "error", err)
+		}
+	}
+
+	// Register Plugins
+	if cfg.Blueprint.EnablePlugins {
+		if cfg.Blueprint.PluginDir == "" {
+			log.Fatal("plugins are enabled but no plugin dir is set")
+		}
+		err := blueprint.LoadPlugins(cfg.Blueprint.PluginDir)
+		if err != nil {
+			log.Fatal("failed to load plugin", "error", err)
+		}
 	}
 
 	for k, bp := range blueprint.GetAllBlueprintSpecs() {

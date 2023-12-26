@@ -39,6 +39,11 @@ var (
 		"s3.secret_key":                   "storage_secret_key",
 		"s3.use_ssl":                      false,
 		"s3.bucket_name":                  "power",
+		"blueprint.enable_builtins":       true,
+		"blueprint.enable_plugins":        false,
+		"blueprint.enable_grpc_registrar": false,
+		"blueprint.plugin_dir":            "",
+		"blueprint.grpc_registration_key": "",
 	}
 
 	envKeys = map[string]string{
@@ -73,5 +78,10 @@ var (
 		"s3.secret_key":                   "S3_SECRET_KEY",
 		"s3.use_ssl":                      "S3_USE_SSL",
 		"s3.bucket_name":                  "S3_BUCKET_NAME",
+		"blueprint.enable_builtins":       "BLUEPRINT_ENABLE_BUILTINS",
+		"blueprint.enable_plugins":        "BLUEPRINT_ENABLE_PLUGINS",
+		"blueprint.enable_grpc_registrar": "BLUEPRINT_ENABLE_GRPC_REGISTRAR",
+		"blueprint.plugin_dir":            "BLUEPRINT_PLUGIN_DIR",
+		"blueprint.grpc_registration_key": "BLUEPRINT_GRPC_REGISTRATION_KEY",
 	}
 )

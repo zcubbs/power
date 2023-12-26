@@ -10,6 +10,8 @@ type Configuration struct {
 	InitAdminPassword string           `mapstructure:"init_admin_password"`
 	S3                S3Config         `mapstructure:"s3"`
 
+	Blueprint BlueprintConfig `mapstructure:"blueprint"`
+
 	// Version is the version of the application.
 	Version string `json:"version"`
 	// Commit is the git commit of the application.
@@ -80,4 +82,12 @@ type S3Config struct {
 	SecretKey  string `mapstructure:"secret_key" json:"secret_key"`
 	UseSSL     bool   `mapstructure:"use_ssl" json:"use_ssl"`
 	BucketName string `mapstructure:"bucket_name" json:"bucket_name"`
+}
+
+type BlueprintConfig struct {
+	EnableBuiltins      bool   `mapstructure:"enable_builtins"`
+	EnablePlugins       bool   `mapstructure:"enable_plugins"`
+	PluginDir           string `mapstructure:"plugin_dir"`
+	EnableGrpcRegistrar bool   `mapstructure:"enable_grpc_registrar"`
+	GrpcRegistrationKey string `mapstructure:"grpc_registration_key"`
 }

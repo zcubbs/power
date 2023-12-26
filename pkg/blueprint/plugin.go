@@ -13,34 +13,48 @@ func LoadPlugins(pluginDir string) error {
 	}
 
 	for _, file := range files {
-		p, err := plugin.Open(file)
+		err := LoadPlugin(file)
 		if err != nil {
-			return fmt.Errorf("failed to open plugin: %v", err)
+			return fmt.Errorf("failed to load plugin %s: %v", file, err)
 		}
+	}
 
-		symbol, err := p.Lookup("Plugin")
-		if err != nil {
-			return fmt.Errorf("failed to lookup symbol Plugin: %v", err)
-		}
+	return nil
+}
 
-		bp, ok := symbol.(Generator)
-		if !ok {
-			return fmt.Errorf("invalid plugin type. expected Generator, got %T", symbol)
-		}
+func LoadPlugin(path string) error {
+	// Open the plugin
+	plug, err := plugin.Open(path)
+	if err != nil {
+		return fmt.Errorf("error opening plugin %s: %v", path, err)
+	}
 
-		specFilePath := filepath.Join(pluginDir, "spec.yaml")
-		spec, err := LoadBlueprintSpec(specFilePath)
-		if err != nil {
-			return fmt.Errorf("failed to load spec for plugin. make sure spec.yaml exists in the plugin directory: %v", err)
-		}
+	// Look up the exported symbol
+	sym, err := plug.Lookup("Plugin")
+	if err != nil {
+		return fmt.Errorf("error looking up symbol 'Plugin' in %s: %v", path, err)
+	}
 
-		err = Register(Blueprint{
-			Spec:      spec,
-			Generator: bp,
-		})
-		if err != nil {
-			return fmt.Errorf("failed to register plugin: %v", err)
-		}
+	// Assert the type to blueprint.Generator (or the correct interface)
+	gen, ok := sym.(Generator)
+	if !ok {
+		return fmt.Errorf("unexpected type from module symbol")
+	}
+
+	// Load the spec
+	spec, err := LoadBlueprintSpec(filepath.Join(path, "spec.yaml"))
+	if err != nil {
+		return fmt.Errorf("error loading spec: %v", err)
+	}
+
+	// Use gen as needed
+	// For example, if you have a registration function in your application:
+	err = Register(Blueprint{
+		Spec:      spec,
+		Generator: gen,
+	})
+	if err != nil {
+		return fmt.Errorf("error registering blueprint generator: %v", err)
 	}
 
 	return nil
