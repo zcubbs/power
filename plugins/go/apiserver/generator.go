@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"github.com/charmbracelet/log"
 	"github.com/zcubbs/power/pkg/blueprint"
@@ -9,6 +10,9 @@ import (
 	"text/template"
 	// Additional imports as necessary
 )
+
+//go:embed spec.yaml
+var specYaml []byte
 
 // Generator conforms to the ComponentGenerator interface from the blueprint package
 type Generator struct{}
@@ -34,6 +38,10 @@ func (g *Generator) Generate(spec blueprint.Spec, values map[string]string, work
 	}
 
 	return nil
+}
+
+func (g *Generator) LoadSpec() (blueprint.Spec, error) {
+	return blueprint.LoadBlueprintSpecFromBytes(specYaml)
 }
 
 // parseConfig extracts configuration options from ComponentSpec

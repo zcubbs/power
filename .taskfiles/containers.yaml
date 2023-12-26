@@ -11,7 +11,7 @@ tasks:
   up:
     desc: Run Containers
     cmds:
-      - task: up:minio
+      - task: up:seaweedfs
 
   up:minio:
     desc: Run Minio
@@ -29,7 +29,7 @@ tasks:
   down:
     desc: Stop Containers
     cmds:
-      - task: down:minio
+      - task: down:seaweedfs
 
   down:minio:
     desc: Stop Minio

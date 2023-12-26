@@ -1,6 +1,7 @@
 id: "go-apiserver"
 name: "Go API Server"
 description: "A Simple Go API Server Template"
+version: "0.1.0"
 options:
   - id: "goVersion"
     name: "Go Version"

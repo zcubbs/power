@@ -9,6 +9,7 @@ import (
 	"github.com/zcubbs/power/cmd/server/utils"
 	"github.com/zcubbs/power/pkg/blueprint"
 	"github.com/zcubbs/power/pkg/designer"
+	"github.com/zcubbs/power/pkg/plugin"
 	"os"
 )
 
@@ -81,14 +82,18 @@ func main() {
 		if cfg.Blueprint.PluginDir == "" {
 			log.Fatal("plugins are enabled but no plugin dir is set")
 		}
-		err := blueprint.LoadPlugins(cfg.Blueprint.PluginDir)
+		err := plugin.LoadPlugins(cfg.Blueprint.PluginDir)
 		if err != nil {
 			log.Fatal("failed to load plugin", "error", err)
 		}
 	}
 
-	for k, bp := range blueprint.GetAllBlueprintSpecs() {
-		log.Info("registered blueprint", "id", k, "name", bp.Name)
+	for _, bp := range blueprint.GetAllBlueprints() {
+		log.Info("registered blueprint",
+			"id", bp.Spec.ID,
+			"name", bp.Spec.Name,
+			"version", bp.Spec.Version,
+		)
 	}
 
 	// Create gRPC Server

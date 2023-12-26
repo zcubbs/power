@@ -4,6 +4,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import BlueprintCustomizationDialog from "@/components/BlueprintCustomizationDialog.tsx";
 import {generateBlueprint} from "@/api.ts";
 import {useToast} from "@/components/ui/use-toast.ts";
+import {Badge} from "@/components/ui/badge.tsx";
 
 interface BlueprintTileProps {
   blueprint: Blueprint;
@@ -44,6 +45,7 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
         <CardDescription>{blueprint.spec.description}</CardDescription>
       </CardHeader>
       <CardContent>
+        <Badge className="mr-2">{blueprint.type}</Badge>
         <BlueprintCustomizationDialog blueprint={blueprint} onGenerate={handleGenerate}/>
       </CardContent>
     </Card>

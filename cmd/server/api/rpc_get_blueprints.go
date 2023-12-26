@@ -9,9 +9,10 @@ import (
 func (s *Server) GetBlueprints(_ context.Context, req *pb.GetBlueprintListRequest) (*pb.GetBlueprintListResponse, error) {
 	// Get the list of registered blueprints
 	blueprints := make([]*pb.Blueprint, 0)
-	for _, spec := range blueprint.GetAllBlueprintSpecs() {
+	for _, bpt := range blueprint.GetAllBlueprints() {
 		blueprints = append(blueprints, &pb.Blueprint{
-			Spec: toSpecPb(spec),
+			Spec: toSpecPb(&bpt.Spec),
+			Type: string(bpt.Type),
 		})
 	}
 

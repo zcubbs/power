@@ -156,6 +156,9 @@
       "properties": {
         "spec": {
           "$ref": "#/definitions/v1Spec"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },

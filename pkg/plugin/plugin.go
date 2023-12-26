@@ -1,9 +1,12 @@
-package blueprint
+package plugin
 
 import (
 	"fmt"
+	"github.com/charmbracelet/log"
+	"github.com/zcubbs/power/pkg/blueprint"
 	"path/filepath"
 	"plugin"
+	"reflect"
 )
 
 func LoadPlugins(pluginDir string) error {
@@ -35,23 +38,29 @@ func LoadPlugin(path string) error {
 		return fmt.Errorf("error looking up symbol 'Plugin' in %s: %v", path, err)
 	}
 
+	log.Debug("Loaded plugin", "path", path, "sym", reflect.TypeOf(sym))
+
 	// Assert the type to blueprint.Generator (or the correct interface)
-	gen, ok := sym.(Generator)
+	gen, ok := sym.(*blueprint.Generator)
 	if !ok {
 		return fmt.Errorf("unexpected type from module symbol")
 	}
 
+	// gen to *blueprint.Generator
+	dgen := *gen
+
 	// Load the spec
-	spec, err := LoadBlueprintSpec(filepath.Join(path, "spec.yaml"))
+	spec, err := dgen.LoadSpec()
 	if err != nil {
 		return fmt.Errorf("error loading spec: %v", err)
 	}
 
 	// Use gen as needed
 	// For example, if you have a registration function in your application:
-	err = Register(Blueprint{
+	err = blueprint.Register(blueprint.Blueprint{
 		Spec:      spec,
-		Generator: gen,
+		Generator: dgen,
+		Type:      blueprint.TypePlugin,
 	})
 	if err != nil {
 		return fmt.Errorf("error registering blueprint generator: %v", err)

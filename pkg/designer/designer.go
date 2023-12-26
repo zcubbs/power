@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/charmbracelet/log"
 	"github.com/zcubbs/power/pkg/blueprint"
-	"github.com/zcubbs/power/pkg/blueprint/go/apiserver"
 	"github.com/zcubbs/power/pkg/zip"
 	"os"
 	"path"
@@ -208,9 +207,5 @@ func validateOptionChoices(option blueprint.Option) error {
 
 // EnableBuiltinGenerators Register Built-in Generators
 func EnableBuiltinGenerators() error {
-	if err := apiserver.Register(); err != nil {
-		return err
-	}
-
 	return nil
 }

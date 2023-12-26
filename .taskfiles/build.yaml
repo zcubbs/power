@@ -33,10 +33,10 @@ tasks:
   plugins:
     desc: Build Plugins
     cmds:
-      - task: plugins:go:apiserver
+      - task: plugins:go:apiserver:{{OS}}
 
   ############################################################
-  plugins:go:apiserver:
+  plugins:go:apiserver:windows:
     desc: Build Plugins for Windows
     cmds:
       - >
@@ -51,3 +51,14 @@ tasks:
         docker cp temp-plugin-container:/app/plugin.so ./plugins/go/apiserver
       - >
         docker rm temp-plugin-container
+  ############################################################
+  plugins:go:apiserver:linux:
+    desc: Build Plugins for Linux
+    cmds:
+      - cmd: go build -buildmode=plugin -o plugins/go/apiserver/plugin.so ./plugins/go/apiserver/
+        dir: .
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 1
+          CC: x86_64-linux-gnu-gcc

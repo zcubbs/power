@@ -69,3 +69,11 @@ tasks:
     cmds:
       - brew tap ktr0731/evans
       - brew install evans
+
+  ############################################################
+  # Install air
+  install:air:
+      desc: Install air
+      cmds:
+      - go install github.com/cosmtrek/air@latest
+

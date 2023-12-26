@@ -1,5 +1,6 @@
 export interface Blueprint {
   spec: Spec;
+  type: string;
 }
 
 export interface Spec {
