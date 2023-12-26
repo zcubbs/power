@@ -25,14 +25,14 @@ func (s *Server) GenerateProject(_ context.Context, req *pb.GenerateProjectReque
 			return fmt.Errorf("failed to upload project to S3 bucket: %v", err)
 		}
 
+		downloadUrl = url
+
 		// Generate a download URL for the uploaded file
 		log.Debug("Uploaded project to S3",
 			"bucket", s.cfg.S3.BucketName,
 			"object", archivePath,
 			"url", downloadUrl,
 		)
-
-		downloadUrl = url
 		return nil
 	})
 	if err != nil {

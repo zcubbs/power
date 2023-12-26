@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 interface BlueprintCustomizationDialogProps {
   blueprint: Blueprint | null;
@@ -45,6 +46,10 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
       handleOptionChange(option.name, selectedValue);
     };
 
+    const handleSelectChange = (selectedValue: string) => {
+      handleOptionChange(option.name, selectedValue);
+    }
+
     switch (option.type) {
       case 'text':
       case 'number':
@@ -55,7 +60,7 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
             onChange={(e) => handleOptionChange(option.name, e.target.value)}
           />
         );
-      case 'select':
+      case 'combobox':
         return (
           <Combobox
             defaultValue={option.default}
@@ -63,6 +68,21 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
             options={option.choices ?? []} // Ensure this array is populated
             onChange={handleComboboxChange}
           />
+        );
+      case 'select':
+        return (
+          <Select defaultValue={option.default} onValueChange={handleSelectChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder={option.default} />
+            </SelectTrigger>
+            <SelectContent>
+              {option.choices?.map((choice: string) => (
+                <SelectItem key={choice} value={choice}>
+                  {choice}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         );
       case 'boolean':
         return (
