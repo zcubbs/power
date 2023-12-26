@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/charmbracelet/log"
 	"github.com/zcubbs/power/pkg/blueprint"
+	buildinshelloworld "github.com/zcubbs/power/pkg/builtins/helloworld"
 	"github.com/zcubbs/power/pkg/zip"
 	"os"
 	"path"
@@ -207,5 +208,9 @@ func validateOptionChoices(option blueprint.Option) error {
 
 // EnableBuiltinGenerators Register Built-in Generators
 func EnableBuiltinGenerators() error {
+	// Register built-in generators
+	if err := buildinshelloworld.Register(); err != nil {
+		return err
+	}
 	return nil
 }

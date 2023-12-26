@@ -80,7 +80,7 @@ func GetGenerator(id string) (Generator, bool) {
 	}
 
 	generator := pb.Generator
-	return generator.(Generator), true
+	return generator, true
 }
 
 // GetBlueprintSpec retrieves the spec for a given blueprint type.

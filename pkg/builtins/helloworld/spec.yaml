@@ -1,0 +1,13 @@
+id: "hello-world-blueprint"
+name: "Hello World Blueprint"
+description: "A Hello World Blueprint"
+version: "0.1.0"
+options:
+  - id: "option1"
+    name: "Option 1"
+    description: "Choose your Option"
+    type: "select"
+    default: "Foo"
+    choices:
+      - "Foo"
+      - "Bar"

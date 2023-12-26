@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -21,6 +21,12 @@ export const fetchBlueprints = async (): Promise<Blueprint[]> => {
   }
 };
 
+// Define the expected structure of the error response
+interface ErrorResponse {
+  message: string;
+  // Include other properties that might be in the error response
+}
+
 type GenerateResponse = {
   downloadUrl: string;
 };
@@ -32,8 +38,25 @@ export const generateBlueprint = async (blueprintId: string, values: Record<stri
       values
     });
     return response.data.downloadUrl;
-  } catch (error) {
-    console.error('Error generating project:', error);
-    throw error;
+  } catch (error: unknown) {
+    let errorMessage = 'Failed to generate blueprint';
+
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<ErrorResponse>; // Assert the error type
+
+      if (axiosError.response) {
+        const { status, data } = axiosError.response;
+        console.error(`Error generating project: ${status} - ${data?.message}`);
+        errorMessage = data?.message || 'Error occurred during generation';
+      } else {
+        console.error(`Error generating project: ${axiosError.message}`);
+        errorMessage = axiosError.message;
+      }
+    } else {
+      // Non-Axios errors handling
+      console.error('Non-Axios error occurred:', error);
+    }
+
+    throw new Error(errorMessage);
   }
 };

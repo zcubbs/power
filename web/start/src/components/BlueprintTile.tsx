@@ -10,8 +10,8 @@ interface BlueprintTileProps {
   blueprint: Blueprint;
 }
 
-const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
-  const { toast } = useToast();
+const BlueprintTile: React.FC<BlueprintTileProps> = ({blueprint}) => {
+  const {toast} = useToast();
 
   const handleGenerate = async (values: Record<string, string>) => {
     if (!blueprint) return;
@@ -21,20 +21,44 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
     });
 
     // trigger download using a link
-    const link = document.createElement('a');
-    link.href = await generateBlueprint(blueprint.spec.id, values);
-    link.setAttribute('download', `${blueprint.spec.name}.zip`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Trigger download using a link
+      const link = document.createElement('a');
+      link.href = await generateBlueprint(blueprint.spec.id, values);
+      link.setAttribute('download', `${blueprint.spec.name}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    // show toast
-    toast({
-      title: "Blueprint Generated",
-      description: `Your '${blueprint.spec.name}' blueprint has been generated and is downloading.`,
-      duration: 5000,
-    });
+      // Show success toast
+      toast({
+        title: "Blueprint Generated",
+        description: `Your '${blueprint.spec.name}' blueprint has been generated and is downloading.`,
+        duration: 5000,
+      });
+    } catch (error) {
+      // Show error toast
+      toast({
+        title: "Blueprint Generation Failed",
+        description: `An error occurred while generating the blueprint: ${error}`,
+        duration: 5000,
+        variant: 'destructive'
+      });
+    }
+
   };
+
+  const getColoredBadge = () => {
+    if (blueprint.type === 'built-in') {
+      return <Badge variant="secondary">Built-in</Badge>;
+    } else if (blueprint.type === 'plugin') {
+      return <Badge variant="default">Plugin</Badge>;
+    } else if (blueprint.type === 'registrar') {
+      return <Badge variant="default">Registrar</Badge>;
+    } else {
+      return <Badge variant="outline">Unknown</Badge>;
+    }
+  }
 
   return (
     <Card className="rounded-lg shadow-lg">
@@ -45,8 +69,16 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({ blueprint }) => {
         <CardDescription>{blueprint.spec.description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Badge className="mr-2">{blueprint.type}</Badge>
-        <BlueprintCustomizationDialog blueprint={blueprint} onGenerate={handleGenerate}/>
+        <div className="grid grid-cols-2">
+          <div className="flex items-center justify-between col-span-2">
+            <div className="flex items-center">
+              {getColoredBadge()}
+            </div>
+            <div className="flex items-center justify-end col-span-2">
+              <BlueprintCustomizationDialog blueprint={blueprint} onGenerate={handleGenerate}/>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

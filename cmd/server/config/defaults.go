@@ -39,7 +39,7 @@ var (
 		"s3.secret_key":                   "storage_secret_key",
 		"s3.use_ssl":                      false,
 		"s3.bucket_name":                  "power",
-		"blueprint.enable_builtins":       true,
+		"blueprint.enable_builtins":       false,
 		"blueprint.enable_plugins":        false,
 		"blueprint.enable_grpc_registrar": false,
 		"blueprint.plugin_dir":            "",
