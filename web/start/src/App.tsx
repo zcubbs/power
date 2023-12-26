@@ -19,9 +19,14 @@ const App: React.FC = () => {
       <ToastProvider>
         <div className="text-white min-h-screen">
           <div className="container mx-auto p-5">
-            <img src={Logo} alt="logo" className="h-12 mb-5"/>
+            <div className="mb-5 flex">
+              <img src={Logo} alt="logo" className="h-12"/>
+              <span className="flex-auto-leading-none ml-2">
+                {/* add version */}
+              </span>
+            </div>
             <Separator/>
-            <h2 className="text-2xl font-bold mt-10 mb-5">Blueprints</h2>
+            <h2 className="text-3xl font-bold mt-10 mb-10">Blueprints</h2>
             <div className="grid grid-cols-3 gap-4">
               {blueprints.map((blueprint) => (
                 <BlueprintTile key={blueprint.spec.id} blueprint={blueprint}/>

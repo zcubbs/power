@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/charmbracelet/log"
-	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/blueprint"
 	"os"
 	"path/filepath"
 	"text/template"

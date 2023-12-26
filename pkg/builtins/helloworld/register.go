@@ -2,7 +2,7 @@ package buildins_helloworld
 
 import (
 	_ "embed"
-	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/blueprint"
 )
 
 //go:embed spec.yaml

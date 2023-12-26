@@ -19,6 +19,15 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       restartPolicy: Always
+      {{- if .Values.server.enablePlugins }}
+      initContainers:
+        - name: plugin-loader
+          image: "{{ .Values.server.pluginImage.repository }}:{{ .Values.server.pluginImage.tag }}"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: plugin-volume
+              mountPath: "{{ .Values.server.pluginDirectory.path }}"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -45,6 +54,17 @@ spec:
             - name: S3_ENDPOINT
               value: {{ include "this.name" . }}-storage:8333
             {{- end }}
+            {{- if .Values.server.enablePlugins }}
+            - name: BLUEPRINT_ENABLE_PLUGINS
+              value: "true"
+            - name: BLUEPRINT_PLUGIN_DIR
+              value: "/plugins"
+            {{- end }}
+          {{- if .Values.server.enablePlugins }}
+          volumeMounts:
+            - name: plugin-volume
+              mountPath: /plugins
+          {{- end }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
           imagePullPolicy: {{ .Values.web.image.pullPolicy }}
@@ -79,6 +99,10 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
+      volumes:
+        - name: plugin-volume
+          emptyDir: { }
 
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8}}

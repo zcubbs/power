@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "embed"
-	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/blueprint"
 )
 
 // Plugin is the exported plugin blueprint.

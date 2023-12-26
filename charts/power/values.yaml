@@ -68,6 +68,13 @@ server:
     initialDelaySeconds: 5
     periodSeconds: 10
   config: {}
+
+  enablePlugins: false
+  pluginImage:
+    repository: my-plugin-image-repo
+    tag: latest
+  pluginDirectory:
+    path: /path/to/plugin/dir
 ###############################################################################
 web:
   image:

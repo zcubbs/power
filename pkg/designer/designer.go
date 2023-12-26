@@ -3,7 +3,7 @@ package designer
 import (
 	"fmt"
 	"github.com/charmbracelet/log"
-	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/blueprint"
 	buildinshelloworld "github.com/zcubbs/power/pkg/builtins/helloworld"
 	"github.com/zcubbs/power/pkg/zip"
 	"os"

@@ -3,7 +3,7 @@ package plugin
 import (
 	"fmt"
 	"github.com/charmbracelet/log"
-	"github.com/zcubbs/power/pkg/blueprint"
+	"github.com/zcubbs/blueprint"
 	"path/filepath"
 	"plugin"
 	"reflect"
