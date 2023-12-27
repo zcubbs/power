@@ -74,7 +74,7 @@ server:
     tag: latest
     pullPolicy: IfNotPresent
   pluginDirectory:
-    path: /path/to/plugin/dir
+    path: /plugins
 ###############################################################################
 web:
   image:
