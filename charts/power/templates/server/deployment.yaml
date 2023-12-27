@@ -71,7 +71,7 @@ spec:
           {{- if .Values.server.enablePlugins }}
           volumeMounts:
             - name: plugin-volume
-              mountPath: /plugins
+              mountPath: {{ .Values.server.pluginDirectory.path }}
           {{- end }}
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
