@@ -24,7 +24,14 @@ spec:
         - name: plugin-loader
           image: "{{ .Values.server.pluginImage.repository }}:{{ .Values.server.pluginImage.tag }}"
           imagePullPolicy: {{ .Values.server.pluginImage.pullPolicy }}
-          command: ["/bin/sh", "-c", "cp -r /plugins/* {{ .Values.server.pluginDirectory.path }}"]
+          command:
+            - sh
+          args:
+            - -c
+            - |
+              echo "Copying plugins to {{ .Values.server.pluginDirectory.path }}..."
+              ls -la /plugins
+              cp -R /plugins/* {{ .Values.server.pluginDirectory.path }}
           volumeMounts:
             - name: plugin-volume
               mountPath: "{{ .Values.server.pluginDirectory.path }}"
@@ -103,7 +110,7 @@ spec:
 
       volumes:
         - name: plugin-volume
-          emptyDir: { }
+          emptyDir: {}
 
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8}}
