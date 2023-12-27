@@ -66,7 +66,7 @@ spec:
             - name: BLUEPRINT_ENABLE_PLUGINS
               value: "true"
             - name: BLUEPRINT_PLUGIN_DIR
-              value: "/plugins"
+              value: {{ .Values.server.pluginDirectory.path }}
             {{- end }}
           {{- if .Values.server.enablePlugins }}
           volumeMounts:
