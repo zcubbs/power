@@ -8,7 +8,6 @@ tasks:
       - task: web
       - task: server
       - task: cli
-      - task: plugins
 
   ############################################################
   web:
