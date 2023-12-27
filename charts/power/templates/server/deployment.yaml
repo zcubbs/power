@@ -24,6 +24,7 @@ spec:
         - name: plugin-loader
           image: "{{ .Values.server.pluginImage.repository }}:{{ .Values.server.pluginImage.tag }}"
           imagePullPolicy: {{ .Values.server.pluginImage.pullPolicy }}
+          command: ["/bin/sh", "-c", "cp -r /plugins/* {{ .Values.server.pluginDirectory.path }}"]
           volumeMounts:
             - name: plugin-volume
               mountPath: "{{ .Values.server.pluginDirectory.path }}"
