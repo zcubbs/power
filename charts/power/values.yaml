@@ -71,8 +71,9 @@ server:
 
   enablePlugins: false
   pluginImage:
-    repository: my-plugin-image-repo
+    repository: ghcr.io/8naps/power-plugins
     tag: latest
+    pullPolicy: IfNotPresent
   pluginDirectory:
     path: /path/to/plugin/dir
 ###############################################################################

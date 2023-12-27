@@ -23,7 +23,7 @@ spec:
       initContainers:
         - name: plugin-loader
           image: "{{ .Values.server.pluginImage.repository }}:{{ .Values.server.pluginImage.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.server.pluginImage.pullPolicy }}
           volumeMounts:
             - name: plugin-volume
               mountPath: "{{ .Values.server.pluginDirectory.path }}"
