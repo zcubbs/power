@@ -77,11 +77,12 @@ type PostgresConfig struct {
 }
 
 type S3Config struct {
-	Endpoint   string `mapstructure:"endpoint" json:"endpoint"`
-	AccessKey  string `mapstructure:"access_key" json:"access_key"`
-	SecretKey  string `mapstructure:"secret_key" json:"secret_key"`
-	UseSSL     bool   `mapstructure:"use_ssl" json:"use_ssl"`
-	BucketName string `mapstructure:"bucket_name" json:"bucket_name"`
+	ConnectionRetryCount int    `mapstructure:"connection_retry_count" json:"connection_retry_count"`
+	Endpoint             string `mapstructure:"endpoint" json:"endpoint"`
+	AccessKey            string `mapstructure:"access_key" json:"access_key"`
+	SecretKey            string `mapstructure:"secret_key" json:"secret_key"`
+	UseSSL               bool   `mapstructure:"use_ssl" json:"use_ssl"`
+	BucketName           string `mapstructure:"bucket_name" json:"bucket_name"`
 }
 
 type BlueprintConfig struct {

@@ -39,7 +39,7 @@ func NewServer(store db.Store, cfg config.Configuration, embedOpts ...EmbedAsset
 	}
 
 	// setup s3 client
-	setupS3Client(s, 10)
+	setupS3Client(s)
 
 	return s, nil
 }
@@ -160,11 +160,11 @@ func newFileServerHandler(opts EmbedAssetsOpts) http.Handler {
 	return http.StripPrefix(opts.Path, dir)
 }
 
-func setupS3Client(s *Server, maxRetries int) {
+func setupS3Client(s *Server) {
 	retryCount := 0
 
 	for {
-		if retryCount >= maxRetries {
+		if retryCount >= s.cfg.S3.ConnectionRetryCount {
 			log.Fatal("maximum retries reached for setting up S3 client, exiting")
 			return // Or handle this situation appropriately
 		}
