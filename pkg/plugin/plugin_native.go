@@ -9,14 +9,16 @@ import (
 	"reflect"
 )
 
-func LoadPlugins(pluginDir string) error {
+// LoadNativePlugins loads all plugins in the given directory
+// Deprecated: Use DiscoverAndLoadBlueprintPlugins instead
+func LoadNativePlugins(pluginDir string) error {
 	files, err := filepath.Glob(filepath.Join(pluginDir, "*.so"))
 	if err != nil {
 		return fmt.Errorf("failed to list plugins: %v", err)
 	}
 
 	for _, file := range files {
-		err := LoadPlugin(file)
+		err := LoadNativePlugin(file)
 		if err != nil {
 			return fmt.Errorf("failed to load plugin %s: %v", file, err)
 		}
@@ -25,7 +27,7 @@ func LoadPlugins(pluginDir string) error {
 	return nil
 }
 
-func LoadPlugin(path string) error {
+func LoadNativePlugin(path string) error {
 	// Open the plugin
 	plug, err := plugin.Open(path)
 	if err != nil {

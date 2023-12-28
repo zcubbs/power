@@ -82,9 +82,16 @@ func main() {
 		if cfg.Blueprint.PluginDir == "" {
 			log.Fatal("plugins are enabled but no plugin dir is set")
 		}
-		err := plugin.LoadPlugins(cfg.Blueprint.PluginDir)
+		// Deprecated
+		//err := plugin.LoadNativePlugins(cfg.Blueprint.PluginDir)
+		//if err != nil {
+		//	log.Fatal("failed to load plugin", "error", err)
+		//}
+
+		// Use DiscoverAndLoadBlueprintPlugins for dynamic plugin loading
+		_, err := plugin.DiscoverAndLoadBlueprintPlugins(cfg.Blueprint.PluginDir)
 		if err != nil {
-			log.Fatal("failed to load plugin", "error", err)
+			log.Fatal("failed to discover and load blueprint plugins", "error", err)
 		}
 	}
 

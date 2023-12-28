@@ -14,6 +14,25 @@ const App: React.FC = () => {
     fetchBlueprints().then(setBlueprints);
   }, []);
 
+  const getNoBlueprints = () => {
+    return (
+      <div className="text-center text-gray-400 mt-10 p-10">
+        <p className="text-2xl font-bold">No blueprints found</p>
+        <p className="text-lg">Load plugins or enable built-in blueprints to get started.</p>
+      </div>
+    );
+  };
+
+  const getBlueprints = () => {
+    return (
+      <div className="grid grid-cols-3 gap-4">
+        {blueprints?.map((blueprint) => (
+          <BlueprintTile key={blueprint.spec.id} blueprint={blueprint}/>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ToastProvider>
@@ -27,11 +46,7 @@ const App: React.FC = () => {
             </div>
             <Separator/>
             <h2 className="text-3xl font-bold mt-10 mb-10">Blueprints</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {blueprints.map((blueprint) => (
-                <BlueprintTile key={blueprint.spec.id} blueprint={blueprint}/>
-              ))}
-            </div>
+            {blueprints && blueprints.length > 0 ? getBlueprints() : getNoBlueprints()}
           </div>
         </div>
         <Toaster />

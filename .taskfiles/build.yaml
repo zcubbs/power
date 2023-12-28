@@ -28,3 +28,15 @@ tasks:
     desc: Build CLI
     cmds:
       - go build -o bin/cli ./cmd/cli/main.go
+
+  ############################################################
+  plugins:
+    desc: Build Plugins
+    cmds:
+      - task: plugins:go_apiserver
+
+  ############################################################
+  plugins:go_apiserver:
+    desc: Build go_apiserver plugin
+    cmds:
+      - go build -o bin/plugins/go_apiserver ./plugins/go_apiserver/
