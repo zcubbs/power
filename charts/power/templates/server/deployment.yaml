@@ -32,7 +32,11 @@ spec:
               echo "Copying plugins to {{ .Values.server.pluginDirectory.path }}..."
               ls -la /plugins
               cp -R /plugins/* {{ .Values.server.pluginDirectory.path }}
-              chmod -R 755 {{ .Values.server.pluginDirectory.path }}/*
+              echo "Done copying plugins to {{ .Values.server.pluginDirectory.path }}..."
+              echo "Setting permissions on {{ .Values.server.pluginDirectory.path }}..."
+              chmod -R +x {{ .Values.server.pluginDirectory.path }}/*
+              echo "Done setting permissions on {{ .Values.server.pluginDirectory.path }}..."
+              echo "Listing contents of {{ .Values.server.pluginDirectory.path }}..."
               ls -la {{ .Values.server.pluginDirectory.path }}
           volumeMounts:
             - name: plugin-volume
