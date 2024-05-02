@@ -33,13 +33,21 @@ const App: React.FC = () => {
     );
   }
 
+  const getLogo = () => {
+    if (import.meta.env.VITE_APP_LOGO_URL) {
+      return <img src={import.meta.env.VITE_APP_LOGO_URL} alt="logo" className="h-12"/>
+    } else {
+      return <img src={Logo} alt="logo" className="h-12"/>
+    }
+  }
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ToastProvider>
         <div className="text-white min-h-screen">
           <div className="container mx-auto p-5">
             <div className="mb-5 flex">
-              <img src={Logo} alt="logo" className="h-12"/>
+              {getLogo()}
               <span className="flex-auto-leading-none ml-2">
                 {/* add version */}
               </span>

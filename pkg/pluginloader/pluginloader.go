@@ -28,6 +28,7 @@ func LoadPluginsFromArchive(archivePath string) ([]blueprint.Generator, error) {
 
 // loadFromTarGz extracts tar.gz files to a temporary directory and returns the path.
 func loadFromTarGz(archivePath string) ([]blueprint.Generator, error) {
+	archivePath = filepath.Clean(archivePath)
 	file, err := os.Open(archivePath)
 	if err != nil {
 		return nil, err
@@ -66,8 +67,12 @@ func extractTarFiles(tarReader *tar.Reader, targetDir string) error {
 			return err
 		}
 
-		targetPath := filepath.Join(targetDir, header.Name)
-		if err := createTarEntry(header, tarReader, targetPath); err != nil {
+		cleanPath, err := SanitizeArchivePath(targetDir, header.Name)
+		if err != nil {
+			return err
+		}
+
+		if err := createTarEntry(header, tarReader, cleanPath); err != nil {
 			return err
 		}
 	}
@@ -77,7 +82,7 @@ func extractTarFiles(tarReader *tar.Reader, targetDir string) error {
 func createTarEntry(header *tar.Header, tarReader *tar.Reader, targetPath string) error {
 	switch header.Typeflag {
 	case tar.TypeDir:
-		return os.MkdirAll(targetPath, 0755)
+		return os.MkdirAll(targetPath, 0750)
 	case tar.TypeReg:
 		return writeFileFromTar(tarReader, targetPath)
 	default:
@@ -86,8 +91,9 @@ func createTarEntry(header *tar.Header, tarReader *tar.Reader, targetPath string
 }
 
 // writeFileFromTar writes a file from tar data to the given path.
-func writeFileFromTar(tarReader *tar.Reader, filePath string) error {
-	outFile, err := os.Create(filePath)
+func writeFileFromTar(tarReader *tar.Reader, fileP string) error {
+	fileP = filepath.Clean(fileP)
+	outFile, err := os.Create(fileP)
 	if err != nil {
 		return err
 	}
@@ -116,21 +122,24 @@ func loadFromZip(archivePath string) ([]blueprint.Generator, error) {
 	// Extract files to the temporary directory
 	for _, file := range zipFile.File {
 		// Path for the extracted file or directory
-		fpath := filepath.Join(tempDir, file.Name)
+		fPath, err := SanitizeArchivePath(tempDir, file.Name)
+		if err != nil {
+			return nil, fmt.Errorf("failed to sanitize archive path: %w", err)
+		}
 
 		// Check for ZipSlip (Directory traversal vulnerability)
-		if !strings.HasPrefix(fpath, filepath.Clean(tempDir)+string(os.PathSeparator)) {
-			return nil, fmt.Errorf("illegal file path: %s", fpath)
+		if !strings.HasPrefix(fPath, filepath.Clean(tempDir)+string(os.PathSeparator)) {
+			return nil, fmt.Errorf("illegal file path: %s", fPath)
 		}
 
 		if file.FileInfo().IsDir() {
 			// Create directory
-			if err := os.MkdirAll(fpath, os.ModePerm); err != nil {
+			if err := os.MkdirAll(fPath, os.ModePerm); err != nil {
 				return nil, err
 			}
 		} else {
 			// Create file
-			if err := extractFile(file, fpath); err != nil {
+			if err := extractFile(file, fPath); err != nil {
 				return nil, err
 			}
 		}
@@ -148,12 +157,30 @@ func extractFile(file *zip.File, fPath string) error {
 	}
 	defer rc.Close()
 
+	// clean the file path
+	fPath = filepath.Clean(fPath)
 	outFile, err := os.OpenFile(fPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(outFile, rc)
-	outFile.Close() // Close the file immediately on error or after copy
+	_, err = io.CopyN(outFile, rc, int64(file.UncompressedSize64))
+	if err != nil {
+		return fmt.Errorf("failed to copy file: %w", err)
+	}
+	err = outFile.Close()
+	if err != nil {
+		return fmt.Errorf("failed to close file: %w", err)
+	} // Close the file immediately on error or after copy
 	return err
+}
+
+// SanitizeArchivePath Sanitize archive file pathing from "G305: Zip Slip vulnerability"
+func SanitizeArchivePath(d, t string) (v string, err error) {
+	v = filepath.Join(d, t)
+	if strings.HasPrefix(v, filepath.Clean(d)) {
+		return v, nil
+	}
+
+	return "", fmt.Errorf("%s: %s", "content filepath is tainted", t)
 }

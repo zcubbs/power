@@ -3,5 +3,5 @@ debug: true
 blueprint:
   enable_builtins: false
   enable_plugins: true
-  plugin_dir: ../power-plugins/bin/windows_amd64
+  plugin_dir: ../power-plugins/bin
 #  plugin_dir: ../power-plugins/bin/linux_amd64

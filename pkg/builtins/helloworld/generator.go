@@ -67,7 +67,7 @@ func parseConfig(spec blueprint.Spec, values map[string]string) (Config, error) 
 // createProjectStructure sets up the project directory and base files
 func createProjectStructure(outputPath string, _ Config) (string, error) {
 	projectPath := filepath.Join(outputPath, "hello-world")
-	if err := os.MkdirAll(projectPath, 0755); err != nil {
+	if err := os.MkdirAll(projectPath, 0750); err != nil {
 		return "", err
 	}
 
@@ -98,6 +98,8 @@ func processTemplate(filePath, tmpl string, config Config) error {
 		return err
 	}
 
+	// clean the file path
+	filePath = filepath.Clean(filePath)
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err
