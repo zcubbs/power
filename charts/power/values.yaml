@@ -130,8 +130,8 @@ web:
   config: {}
 ###############################################################################
 storage:
-  # tag: 3.59
-  image: chrislusf/seaweedfs@sha256:b0741dd5421ba253052aa2ee929fd34c4e9a45147eb2ce4e28916777a6f6b7ae
+  # tag: seaweedfs:3.65
+  image: chrislusf/seaweedfs@sha256:9fcd0ed689253a6c9e7e3278a01e0fa68b22393fa8f7851ea78380a0a4439b02
   pullPolicy: IfNotPresent
   services:
     - match: Host(`api.app.example.com`) && (PathPrefix(`/v1`) || PathPrefix(`/swagger`))
