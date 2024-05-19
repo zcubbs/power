@@ -1,10 +1,11 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL;
+export const API_BASE_URL =
+  window.VITE_APP_LOGO_URL || 'http://localhost:3000';
 
 interface Blueprint {
   type: string;
-  spec: any; // Replace 'any' with a more specific type if you have a defined spec structure
+  spec: any;
 }
 
 type FetchBlueprintsResponse = {

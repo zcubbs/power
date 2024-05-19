@@ -34,12 +34,11 @@ const App: React.FC = () => {
   }
 
   const getLogo = () => {
-    if (import.meta.env.VITE_APP_LOGO_URL) {
-      return <img src={import.meta.env.VITE_APP_LOGO_URL} alt="logo" className="h-12"/>
-    } else {
-      return <img src={Logo} alt="logo" className="h-12"/>
-    }
-  }
+    const logoUrl = window.VITE_APP_LOGO_URL;
+    return (
+      <img src={logoUrl || Logo} alt="logo" className="h-12" />
+    );
+  };
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">

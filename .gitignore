@@ -11,3 +11,4 @@
 
 /server/web/dist/
 *.so
+/tests/config.local.yaml
