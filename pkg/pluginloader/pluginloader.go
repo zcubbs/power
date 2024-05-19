@@ -134,7 +134,7 @@ func loadFromZip(archivePath string) ([]blueprint.Generator, error) {
 
 		if file.FileInfo().IsDir() {
 			// Create directory
-			if err := os.MkdirAll(fPath, os.ModePerm); err != nil {
+			if err := os.MkdirAll(fPath, 0750); err != nil {
 				return nil, err
 			}
 		} else {
