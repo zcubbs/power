@@ -2,7 +2,7 @@ import axios, {AxiosError, AxiosResponse} from 'axios';
 import getConfig from "@/config.ts";
 
 export const API_BASE_URL =
-  getConfig('window.VITE_API_URL') || 'http://localhost:8000';
+  getConfig('window.VITE_APP_API_URL') || 'http://localhost:8000';
 
 interface Blueprint {
   type: string;

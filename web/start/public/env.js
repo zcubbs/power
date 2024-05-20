@@ -1,3 +1,3 @@
-window.VITE_API_URL = '${VITE_API_URL}';
+window.VITE_APP_API_URL = '${VITE_APP_API_URL}';
 window.VITE_APP_LOGO_URL = '${VITE_APP_LOGO_URL}';
 window.VITE_APP_TITLE = '${VITE_APP_TITLE}';
