@@ -1,7 +1,7 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 
 export const API_BASE_URL =
-  window.VITE_APP_LOGO_URL || 'http://localhost:3000';
+  window.VITE_API_URL || 'http://localhost:3000';
 
 interface Blueprint {
   type: string;
