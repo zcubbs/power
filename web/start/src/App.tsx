@@ -11,6 +11,7 @@ import {Separator} from "@/components/ui/separator.tsx";
 const App: React.FC = () => {
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   useEffect(() => {
+    document.title = window.VITE_APP_TITLE || 'Power - Starters';
     fetchBlueprints().then(setBlueprints);
   }, []);
 
@@ -52,7 +53,7 @@ const App: React.FC = () => {
               </span>
             </div>
             <Separator/>
-            <h2 className="text-3xl font-bold mt-10 mb-10">Blueprints</h2>
+            <h2 className="text-3xl font-bold mt-10 mb-10">Plugins</h2>
             {blueprints && blueprints.length > 0 ? getBlueprints() : getNoBlueprints()}
           </div>
         </div>

@@ -3,6 +3,7 @@ declare global {
   interface Window {
     VITE_APP_LOGO_URL?: string;
     VITE_API_URL?: string;
+    VITE_APP_TITLE?: string;
   }
 }
 
