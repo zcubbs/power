@@ -7,11 +7,12 @@ import {ToastProvider} from "@/components/ui/toast.tsx";
 import {Toaster} from "@/components/ui/toaster.tsx";
 import Logo from './assets/logo.png';
 import {Separator} from "@/components/ui/separator.tsx";
+import getConfig from "@/config.ts";
 
 const App: React.FC = () => {
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   useEffect(() => {
-    document.title = window.VITE_APP_TITLE || 'Power - Starters';
+    document.title = getConfig('VITE_APP_TITLE') || 'Power - Starters';
     fetchBlueprints().then(setBlueprints);
   }, []);
 
@@ -35,7 +36,7 @@ const App: React.FC = () => {
   }
 
   const getLogo = () => {
-    const logoUrl = window.VITE_APP_LOGO_URL;
+    const logoUrl = getConfig('VITE_APP_LOGO_URL')
     return (
       <img src={logoUrl || Logo} alt="logo" className="h-12" />
     );

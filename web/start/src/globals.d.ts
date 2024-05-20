@@ -4,6 +4,7 @@ declare global {
     VITE_APP_LOGO_URL?: string;
     VITE_API_URL?: string;
     VITE_APP_TITLE?: string;
+    [key: string]: any;
   }
 }
 
