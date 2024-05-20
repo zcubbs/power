@@ -1,6 +1,7 @@
 export interface Blueprint {
   spec: Spec;
   type: string;
+  version: string;
 }
 
 export interface Spec {

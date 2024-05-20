@@ -50,20 +50,20 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({blueprint}) => {
 
   const getColoredBadge = () => {
     if (blueprint.type === 'built-in') {
-      return <Badge variant="secondary">Built-in</Badge>;
+      return <Badge variant="secondary" className="text-sm">Built-in</Badge>;
     } else if (blueprint.type === 'plugin') {
-      return <Badge variant="default">Plugin</Badge>;
+      return <Badge variant="secondary" className="text-sm">Plugin</Badge>;
     } else if (blueprint.type === 'registrar') {
-      return <Badge variant="default">Registrar</Badge>;
+      return <Badge variant="secondary" className="text-sm">Registrar</Badge>;
     } else {
-      return <Badge variant="outline">Unknown</Badge>;
+      return <Badge variant="outline" className="text-sm">Unknown</Badge>;
     }
   }
 
   return (
     <Card className="rounded-lg shadow-lg">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">
+        <CardTitle className="text-xl font-bold shadow-lg">
           {blueprint.spec.name}
         </CardTitle>
         <CardDescription>{blueprint.spec.description}</CardDescription>
@@ -73,6 +73,9 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({blueprint}) => {
           <div className="flex items-center justify-between col-span-2">
             <div className="flex items-center">
               {getColoredBadge()}
+              <Badge variant="secondary" className="ml-2 fw-bold text-sm">
+                {blueprint.version}
+              </Badge>
             </div>
             <div className="flex items-center justify-end col-span-2">
               <BlueprintCustomizationDialog blueprint={blueprint} onGenerate={handleGenerate}/>

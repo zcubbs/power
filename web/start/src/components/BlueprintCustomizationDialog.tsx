@@ -104,7 +104,9 @@ const BlueprintCustomizationDialog: React.FC<BlueprintCustomizationDialogProps> 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Use</Button>
+        <Button variant="secondary">
+          Use
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

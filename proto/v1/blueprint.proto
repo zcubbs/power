@@ -7,6 +7,7 @@ option go_package = "github.com/zcubbs/power";
 message Blueprint {
   Spec spec = 1;
   string type = 2;
+  string version = 3;
 }
 
 message Spec {

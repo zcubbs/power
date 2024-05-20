@@ -159,6 +159,9 @@
         },
         "type": {
           "type": "string"
+        },
+        "version": {
+          "type": "string"
         }
       }
     },
