@@ -50,13 +50,13 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({blueprint}) => {
 
   const getColoredBadge = () => {
     if (blueprint.type === 'built-in') {
-      return <Badge variant="secondary" className="text-sm">Built-in</Badge>;
+      return <Badge variant="secondary">Built-in</Badge>;
     } else if (blueprint.type === 'plugin') {
-      return <Badge variant="secondary" className="text-sm">Plugin</Badge>;
+      return <Badge variant="secondary">Plugin</Badge>;
     } else if (blueprint.type === 'registrar') {
-      return <Badge variant="secondary" className="text-sm">Registrar</Badge>;
+      return <Badge variant="secondary">Registrar</Badge>;
     } else {
-      return <Badge variant="outline" className="text-sm">Unknown</Badge>;
+      return <Badge variant="outline">Unknown</Badge>;
     }
   }
 
@@ -73,7 +73,7 @@ const BlueprintTile: React.FC<BlueprintTileProps> = ({blueprint}) => {
           <div className="flex items-center justify-between col-span-2">
             <div className="flex items-center">
               {getColoredBadge()}
-              <Badge variant="secondary" className="ml-2 fw-bold text-sm">
+              <Badge variant="secondary" className="ml-2 fw-bold">
                 {blueprint.version}
               </Badge>
             </div>

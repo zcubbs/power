@@ -7,6 +7,7 @@ export const API_BASE_URL =
 interface Blueprint {
   type: string;
   spec: any;
+  version: string;
 }
 
 type FetchBlueprintsResponse = {
